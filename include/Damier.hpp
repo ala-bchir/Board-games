@@ -8,7 +8,7 @@ class Damier{
 private: 
     int taille;
     /*Tableau de char à deux dimensions*/
-    vector<vector<char>> grille;
+    vector<vector<char> > grille;
 public:
     Damier(int taille);
     void afficher() const;
