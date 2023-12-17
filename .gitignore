@@ -1,0 +1,5 @@
+# Exclure le dossier .vscode
+.vscode/
+
+# Exclure les fichiers .DS_Store
+.DS_Store

@@ -5,6 +5,7 @@ TARGET = jeu
 CC = g++
 
 # Dossiers
+CMP_DIR = component
 SRC_DIR = src
 INC_DIR = include
 
@@ -17,7 +18,7 @@ SFML_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 
 
 # Fichiers source
-SRC = $(SRC_DIR)/main.cpp $(SRC_DIR)/Jeu.cpp $(SRC_DIR)/Butin.cpp $(SRC_DIR)/Damier.cpp $(SRC_DIR)/Pion.cpp
+SRC = $(SRC_DIR)/main.cpp $(SRC_DIR)/$(CMP_DIR)/Jeu.cpp $(SRC_DIR)/Butin.cpp $(SRC_DIR)/$(CMP_DIR)/Damier.cpp $(SRC_DIR)/$(CMP_DIR)/Pion.cpp
 
 # Règle par défaut
 all: $(TARGET)
