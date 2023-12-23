@@ -7,7 +7,7 @@ using namespace std;
 
 // Constructeur de Butin
 Butin::Butin():Jeu(8) { // Taille du damier fixée à 8x8
-    initialiserJeu(); 
+    
 }
 
 void Butin::creerPions() {

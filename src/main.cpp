@@ -1,21 +1,64 @@
 #include "Butin.hpp"  // Assurez-vous que ce chemin est correct pour inclure votre classe Butin
+#include <iostream>
+using namespace std;
 
 int main() {
-    Butin jeu;  // Créez une instance de votre jeu
+    
+    int choix ;
+    // Affichage du message d'accueil
+    cout << "Bienvenue dans notre sélection de jeux!\n";
+    cout << "Veuillez choisir le jeu auquel vous voulez jouer:\n";
+    cout << "1. Buttin\n";
+    cout << "2. Dame\n";
+    cout << "3. Safari\n";
+    cout << "Entrez le numéro de votre choix: ";
+    cin >> choix;
+
+    Butin butin;  // Créez une instance de votre jeu
     int joueurActuel = 1;  // Commencez avec le joueur 1
     bool jeuTermine = false;
+    // Gestion du choix
+    switch (choix) {
+        case 1:
+            // Code pour démarrer Buttin
+            cout << "Vous avez choisi le jeu Buttin.\n";
+            butin.initialiserJeu(); 
+            
 
-    while (!jeuTermine) {
-        jeu.afficherJeu();  // Affichez l'état actuel du jeu, si vous avez une telle méthode
+            while (!jeuTermine) {
+                butin.afficherJeu();  // Affichez l'état actuel du jeu, si vous avez une telle méthode
 
-        jeuTermine = jeu.jouerUnTour(joueurActuel);  // Jouez un tour pour le joueur actuel
+                jeuTermine = butin.jouerUnTour(joueurActuel);  // Jouez un tour pour le joueur actuel
 
-        // Changez de joueur (dans cet exemple, on suppose 2 joueurs)
-        joueurActuel = joueurActuel == 1 ? 2 : 1;
+                // Changez de joueur (dans cet exemple, on suppose 2 joueurs)
+                joueurActuel = joueurActuel == 1 ? 2 : 1;
+            }
+
+
+
+            
+
+            
+            // À la fin du jeu, affichez les résultats ou le gagnant
+            std::cout << "Fin de la partie!" << std::endl;
+
+            break;
+        case 2:
+            // Code pour démarrer Dame
+            cout << "Vous avez choisi  Dame.\n";
+        
+            break;
+        case 3:
+            // Code pour démarrer  Safari
+            cout << "Vous avez choisi  Safari.\n";
+            
+            break;
+        default:
+            // Gestion des entrées non valides
+            cout << "Choix non valide. Veuillez entrer un numéro entre 1 et 3.\n";
+            break;
     }
-
-    // À la fin du jeu, affichez les résultats ou le gagnant
-    std::cout << "Fin de la partie!" << std::endl;
 
     return 0;
 }
+
