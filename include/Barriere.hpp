@@ -1,25 +1,29 @@
 #ifndef BARRIERE_HPP
 #define BARRIERE_HPP
 
-#include <vector>
-using namespace std;
+#include <utility> 
 
-class Damier{
-private: 
-    int taille;
-    /*Tableau de char à deux dimensions*/
-    vector<vector<char> > grille;
+class Barriere {
 public:
-    Damier(int taille);
-    void afficher() const;
-    void setCellule(int x, int y, char valeur);
-    char getCellule(int x, int y) const;
-    int getTaille() const;
-    bool CoordonneesValides(int x, int y) const;
+    // Type Case
+    using Case= std::pair<int, int>;
+
+    // Constructeur (on distingue le barriere par sa position qui est entre deux cases)
+    Barriere(int x1, int y1, int x2, int y2);
+
+    // Accesseurs
+    Case getPremier() const;
+    Case getSecond() const;
+
+    // Méthode statique pour obtenir le nombre total de barrières créées
+    static int getNombreBarrieres();
+
+private:
+    // Coordonnées des deux cases entourant la barrière
+    Case premier, second;
+
+    // Compteur statique pour le nombre de barrières
+    static int nombreBarrieres;
 };
 
-
-
-
-
-#endif // DAMIER_HPP
+#endif // BARRIERE_HPP

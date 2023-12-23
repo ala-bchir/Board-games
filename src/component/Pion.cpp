@@ -1,7 +1,7 @@
 #include "Pion.hpp"
 
 // Constructeur
-Pion::Pion(int x, int y, char symbole) : x{x}, y{y}, symbole{symbole} {}
+Pion::Pion(int x, int y, char symbole) : x(x), y(y), symbole(symbole) {}
 
 // Accesseurs et mutateurs
 int Pion::getX() const { return x; }
