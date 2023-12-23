@@ -12,7 +12,7 @@
 
 class Jeu {
 protected:
-    Damier damier; // Damier du jeu
+    
     std::vector<Pion*> pions; // Liste des pions avec pointeurs bruts
     virtual bool estMouvementValide(int xDepart, int yDepart, int xArrivee, int yArrivee) const = 0; 
     // Méthodes pour gérer les pièces
@@ -23,8 +23,12 @@ protected:
     std::pair<int, int> CoordonneeDeplacement() const;
 
 public:
+
+
+    Damier damier; // Damier du jeu
     // Constructeur
     Jeu(int tailleDamier);
+    
 
     // Destructeur virtuel pour une bonne gestion de la mémoire avec l'héritage
     virtual ~Jeu() = default;

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Joueur.hpp"
 #include "Pion.hpp"
+#include "Safari.hpp"
 #include <string>
 #include <vector>
 
@@ -19,6 +20,10 @@ int main() {
     std::cout << "Nombre d'animaux après ajout: " << joueur.getNombreAnimaux() << std::endl;
     joueur.retirerAnimal(pion);
     std::cout << "Nombre d'animaux après retrait: " << joueur.getNombreAnimaux() << std::endl;
+
+    //---Test safari ------
+    
+
 
     return 0;
 }

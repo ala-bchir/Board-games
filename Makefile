@@ -10,6 +10,7 @@ CC = g++
 CMP_DIR = component
 SRC_DIR = src
 INC_DIR = include
+SAFARI_DIR = Safari
 
 # Options de compilation
 CFLAGS = -Wall -std=c++11 -I$(INC_DIR) 
@@ -23,7 +24,7 @@ SFML_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 SRC = $(SRC_DIR)/main.cpp $(SRC_DIR)/$(CMP_DIR)/Jeu.cpp $(SRC_DIR)/Butin.cpp $(SRC_DIR)/$(CMP_DIR)/Damier.cpp $(SRC_DIR)/$(CMP_DIR)/Pion.cpp
 
 
-TEST_SRC = $(SRC_DIR)/test.cpp $(SRC_DIR)/$(CMP_DIR)/Joueur.cpp $(SRC_DIR)/$(CMP_DIR)/Pion.cpp
+TEST_SRC = $(SRC_DIR)/test.cpp $(SRC_DIR)/$(CMP_DIR)/Joueur.cpp $(SRC_DIR)/$(CMP_DIR)/Pion.cpp 
 
 # Règle par défaut
 all: $(TARGET)
