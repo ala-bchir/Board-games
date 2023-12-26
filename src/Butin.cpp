@@ -7,37 +7,43 @@ using namespace std;
 
 // Constructeur de Butin
 Butin::Butin():Jeu(8) { // Taille du damier fixée à 8x8
-    
+    initialiserJeu(); 
 }
 
 void Butin::creerPions() {
     // Créer les pions et les ajouter au vecteur 'Pions'
     // Ajouter les pions noirs
     for (int i = 0; i < 10; ++i) {
-        ajouterPion(new Pion(-1, -1, 'N'));
+        ajouterPion(new Pion(-1, -1, "N"));
     }
 
     // Ajouter les pions rouges
     for (int i = 0; i < 20; ++i) {
-        ajouterPion(new Pion(-1, -1, 'R'));
+        ajouterPion(new Pion(-1, -1, "R"));
     }
 
     // Ajouter les pions jaunes
-    for (int i = 0; i < 32; ++i) {
-        ajouterPion(new Pion(-1, -1, 'J'));
+    for (int i = 0; i < 34; ++i) {
+        ajouterPion(new Pion(-1, -1, "J"));
     }
+}
+
+void Butin::initialiserJeu() { 
+    creerPions();
+    placerPionsAleatoirement();
+    afficherJeu();
+    supprimerPionsJaunesInitiaux();
 }
 
 void Butin::placerPionsAleatoirement() {
     std::random_device rd;
     std::mt19937 g(rd());
     int pionsPlaces = 0;
-
     while (pionsPlaces < pions.size()) {
         int x = g() % 8;
         int y = g() % 8;
 
-        if (damier.getCellule(x, y) == '.') { // '.' représente une cellule vide
+        if (damier.getCellule(x, y) == ".") { // '.' représente une cellule vide
             Pion* Pion = pions[pionsPlaces];
             Pion->setPosition(x, y);
             damier.setCellule(x, y, Pion->getSymbole());
@@ -46,36 +52,22 @@ void Butin::placerPionsAleatoirement() {
     }
 }
 
-void Butin::initialiserJeu() { 
-    creerPions();
-    placerPionsAleatoirement();
-    supprimerPionsJaunesInitiaux();
-}
-
 void Butin::supprimerPionsJaunesInitiaux() {
     for (int joueur = 0; joueur < 2; ++joueur) {
         bool pionSupprime = false;
         while (!pionSupprime) {
             int x, y;
-            cout << "Joueur " << (joueur + 1) << ", entrez les coordonnées du pion jaune à supprimer (format: x y): ";
+            cout << "Joueur " << (joueur + 1) << ", entrez les coordonnees du pion jaune a supprimer (format: x y): ";
             //Vérifier si il y a une erreur de Saisie
-            if (!(std::cin >> x >> y)) {
-                cerr << "Erreur : Saisie invalide. Veuillez entrer des nombres.\n";
-                cin.clear(); // Effacer l'état d'erreur de cin
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignorer les caractères erronés entré auparavant
-                continue; // Recommencer la boucle
-            }
+            DemanderSaisieCoordonnees(x, y);
             // Vérifier si les coordonnées sont valides et correspondent à un pion jaune
-            if (damier.CoordonneesValides(x, y) && damier.getCellule(x, y) == 'J') {
-                damier.setCellule(x, y, '.'); // Supprimer le pion jaune du damier
+            if (damier.getCellule(x, y) == "J") {
+                damier.setCellule(x, y, "."); // Supprimer le pion jaune du damier
                 supprimerPion(x, y); // Supprimer le pion correspondant dans 'Pions'
                 pionSupprime = true;
             } else {
-                if(damier.getCellule(x, y) != 'J'){
-                    cerr << "Veuillez choisir un pion Jaune réessayer.\n";
-                }
-                else{
-                    cerr << "Coordonnées invalides, Veuillez réessayer.\n";
+                if(damier.getCellule(x, y) != "J"){
+                    cerr << "Veuillez choisir un pion Jaune reessayer.\n";
                 }
             }
         }
@@ -83,88 +75,103 @@ void Butin::supprimerPionsJaunesInitiaux() {
 }
 
 
-bool Butin::estVictoire() const{
+bool Butin::estVictoire(int joueur) const{
     // Vérifier s'il reste des sauts possibles avec des pions jaunes
     for (Pion* pion : pions) {
-        if (pion->getSymbole() == 'J' && SautPossible(pion)) {
+        if (pion->getSymbole() == "J" && SautPossible(pion)) {
             return false;  // Il reste des sauts possibles, donc la partie n'est pas terminée
         }
     }
     return true;
 }
 
-bool Butin::estMouvementValide(int xOrigine, int yOrigine, int xDestination, int yDestination) const {
-    // Vérifier la distance entre l'origine et la destination
-    if (std::abs(xOrigine - xDestination) > 2 || std::abs(yOrigine - yDestination) > 2) {
-        std::cerr << "Erreur : Le mouvement doit se faire à une distance de deux cases." << std::endl;
+bool Butin::estMouvementValide(const Pion *pion, int xDestination, int yDestination) const {
+    int xOrigine=pion->getX();
+    int yOrigine=pion->getY();
+    // Calculer les distances absolues en x et y
+    int distanceX = std::abs(xOrigine - xDestination);
+    int distanceY = std::abs(yOrigine - yDestination);
+
+    // Vérifier si la distance est exactement de deux cases dans une direction ou diagonalement
+    bool estMouvementHorizontal = (distanceX == 2 && distanceY == 0);
+    bool estMouvementVertical = (distanceX == 0 && distanceY == 2);
+    bool estMouvementDiagonal = (distanceX == 2 && distanceY == 2);
+
+    if (!(estMouvementHorizontal || estMouvementVertical || estMouvementDiagonal)) {
         return false;
     }
     // Vérifier si la case de destination est dans les limites du damier
-    if(!damier.CoordonneesValides(xDestination, yDestination)){ return false;}
+    if (!damier.CoordonneesValides(xDestination, yDestination)) {
+        return false;
+    }
 
     // Vérifier si la case de destination est libre et la case intermédiaire est occupée
     int xMilieu = (xOrigine + xDestination) / 2;
     int yMilieu = (yOrigine + yDestination) / 2;
-    return damier.getCellule(xMilieu, yMilieu) != '.' && damier.getCellule(xDestination, yDestination) == '.';
+    return damier.getCellule(xMilieu, yMilieu) != "." && damier.getCellule(xDestination, yDestination) == ".";
 }
 
-bool Butin::SautPossible(const Pion* Pion) const{
-    int x = Pion->getX();
-    int y = Pion->getY();
+
+bool Butin::SautPossible(const Pion* pion) const{
+    int x = pion->getX();
+    int y = pion->getY();
 
     // Vérifier chaque direction pour un saut possible
-    return (estMouvementValide(x, y, x + 2, y) ||    // Droite
-            estMouvementValide(x, y, x - 2, y) ||    // Gauche
-            estMouvementValide(x, y, x, y + 2) ||    // Bas
-            estMouvementValide(x, y, x, y - 2) ||    // Haut
-            estMouvementValide(x, y, x + 2, y + 2) ||// Diagonale Bas Droite
-            estMouvementValide(x, y, x - 2, y - 2) ||// Diagonale Haut Gauche
-            estMouvementValide(x, y, x + 2, y - 2) ||// Diagonale Haut Droite
-            estMouvementValide(x, y, x - 2, y + 2));  // Diagonale Bas Gauche
+    return (estMouvementValide(pion, x + 2, y) ||    // Droite
+            estMouvementValide(pion, x - 2, y) ||    // Gauche
+            estMouvementValide(pion, x, y + 2) ||    // Bas
+            estMouvementValide(pion, x, y - 2) ||    // Haut
+            estMouvementValide(pion, x + 2, y + 2) ||// Diagonale Bas Droite
+            estMouvementValide(pion, x - 2, y - 2) ||// Diagonale Haut Gauche
+            estMouvementValide(pion, x + 2, y - 2) ||// Diagonale Haut Droite
+            estMouvementValide(pion, x - 2, y + 2));  // Diagonale Bas Gauche
 }
 
 bool Butin::jouerUnTour(int joueur) {
+    afficherJeu();
     std::cout << "Tour du Joueur " << joueur << std::endl;
 
     Pion* pionChoisi = nullptr;
-    bool sautRealise = false;
+    bool mouvementRealise = false;
+    bool end = false;
 
-    while (true) {
-        if (!sautRealise) {  // Le joueur peut choisir un pion seulement si aucun saut n'a été réalisé
+    while (end == false) {
+        if (!mouvementRealise&&pionChoisi==nullptr) {  // Le joueur peut choisir un pion seulement si aucun mouvement n'a été réalisé
             pionChoisi = ChoixPion();
         }
-
-        if (!SautPossible(pionChoisi)) {
-            break;  // Si aucun saut n'est possible avec le pion actuel, le tour est terminé
-        }
-
         char reponse;
         std::cout << "Voulez-vous sauter avec ce pion ? (o/n): ";
         std::cin >> reponse;
 
-        if (reponse == 'o' || reponse == 'O') {
-            std::pair<int, int> coordonnees = CoordonneeDeplacement();
-            int xDestination = coordonnees.first;
-            int yDestination = coordonnees.second;
+        // Vider le buffer pour éviter la lecture de caractères résiduels
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-            if (!damier.CoordonneesValides(xDestination, yDestination)) {
-                std::cout << "Coordonnées invalides. Veuillez réessayer.\n";
-            } else {
-                sautRealise = Deplacement(pionChoisi, xDestination, yDestination, joueur);
+        if (reponse == 'o' || reponse == 'O') {
+            if(!SautPossible(pionChoisi)){
+                std::cout<< "Impossible de le chosir car aucun mouvement possible\n";
+                if(mouvementRealise){end=true;}
             }
+            else{
+                int x, y;
+                std::cout << "Entrer les coordonnes pour deplacer le pion\n";
+                DemanderSaisieCoordonnees(x, y);
+                mouvementRealise = Deplacement(pionChoisi, x, y, joueur);
+            }
+            
         } else if (reponse == 'n' || reponse == 'N') {
-            if (!sautRealise) {  // Si aucun saut n'a été réalisé, le joueur peut choisir de changer de pion
-                continue;
-            } else {
-                break;  // Si un saut a déjà été réalisé, le tour est terminé
+            if (mouvementRealise) {
+                end=true;  // Si un mouvement a déjà été réalisé, le tour est terminé
             }
+            pionChoisi=nullptr;
+            // Sinon, continuez la boucle pour choisir un nouveau pion
         } else {
-            std::cout << "Réponse invalide. Veuillez répondre par 'o' (oui) ou 'n' (non).\n";
+            std::cout << "Reponse invalide. Veuillez repondre par 'o' (oui) ou 'n' (non)." << std::endl;
         }
     }
-
-    return !estVictoire();  // Vérifier si le jeu est terminé
+    if(estVictoire(joueur)){Score(joueur);}
+    return estVictoire(joueur);  // Vérifier si le jeu est terminé
 }
+
 
 
 
@@ -174,20 +181,24 @@ Pion* Butin::ChoixPion() const{
     Pion* pionChoisi=nullptr;
     /*Choisir un pion jaune qui peut se déplacer*/
     do {
-        std::cout << "Entrez les coordonnées du pion jaune à déplacer (format: x y): ";
-        std::cin >> x >> y;
+        std::cout << "Entrez les coordonnees du pion jaune a deplacer (format: x y): ";
+        DemanderSaisieCoordonnees(x, y);
         pionChoisi = getPion(x, y);
-    } while (pionChoisi == nullptr || pionChoisi->getSymbole() != 'J' || !SautPossible(pionChoisi));
+        if(pionChoisi->getSymbole() != "J"){std::cout<< "Le pion n est pas jaune. \n";}
+        else{
+            if(!SautPossible(pionChoisi)){
+                std::cout<< "Aucun saut n est possible avec ce pion. \n";
+            }
+        }
+    }  
+    while (pionChoisi == nullptr || pionChoisi->getSymbole() != "J" || !SautPossible(pionChoisi));
     return pionChoisi;
-}
-
-void Butin::enregistrerCapture(Pion* PionCapturee, int joueur) {
-    capturesParJoueur[joueur].push_back(PionCapturee);
 }
 
 bool Butin::Deplacement(Pion* pion, int xDestination, int yDestination, int joueur) {
     // Vérifiez si le saut est possible
-    if (!estMouvementValide(pion->getX(), pion->getY(), xDestination, yDestination)) {
+    if (!estMouvementValide(pion, xDestination, yDestination)) {
+        std::cerr << "Erreur : Le mouvement est pas valide (case occupee / aucun saut)" << std::endl;
         return false;
     }
 
@@ -204,12 +215,16 @@ bool Butin::Deplacement(Pion* pion, int xDestination, int yDestination, int joue
     }
 
     // Déplacez le pion
-    damier.setCellule(xOrigine, yOrigine, '.');
+    damier.setCellule(xOrigine, yOrigine, ".");
     damier.setCellule(xDestination, yDestination, pion->getSymbole());
     pion->setPosition(xDestination, yDestination);
-
+    std::cout << "Le pion a ete deplacer\n";
+    //On affichage le jeu quand le pion a été déplacer
+    afficherJeu();
     return true;
 }
+
+
 
 Butin::~Butin() {
     // Libérer la mémoire des pions dans le vecteur pieces
@@ -227,11 +242,56 @@ Butin::~Butin() {
     capturesParJoueur.clear();
 }
 
-void Butin::afficherJeu()const {
-    for (int y = 0; y < damier.getTaille(); ++y) {
-        for (int x = 0; x < damier.getTaille(); ++x) {
-            std::cout << damier.getCellule(x, y) << " ";
-        }
-        std::cout << std::endl;
+int Butin::pointsPion(const Pion* pion) const {
+    string symbole = pion->getSymbole();
+    if (symbole == "N") {
+        return 3;  // Pion noir
+    } else if (symbole == "R") {
+        return 2;  // Pion rouge
+    } else {
+        return 1;  // Pion jaune ou tout autre pion
     }
+}
+
+int Butin::pointsSymbole(string symbole) const {
+    if (symbole == "N") {
+        return 3;  // Pion noir
+    } else if (symbole == "R") {
+        return 2;  // Pion rouge
+    } else {
+        return 1;  // Pion jaune ou tout autre pion
+    }
+}
+
+
+bool Butin::Score(int joueur) const {
+    // Calculer les scores initiaux des joueurs à partir des pions capturés
+    std::map<int, int> scores;
+    for (const std::pair<const int, std::vector<Pion*>>& joueur_pions : capturesParJoueur) {
+        int scoreJoueur = 0;
+        for (const Pion* pion : joueur_pions.second) {
+            scoreJoueur += pointsPion(pion);  // pointsPion est une méthode qui retourne les points du pion
+        }
+        scores[joueur_pions.first] = scoreJoueur;
+    }
+
+    // Calculer les points des pions restants sur le plateau
+    int pointsPionsRestants = 0;
+    for (int x = 0; x < damier.getTaille(); ++x) {
+        for (int y = 0; y < damier.getTaille(); ++y) {
+            string symbole = damier.getCellule(x, y);
+            pointsPionsRestants += pointsSymbole(symbole);  // pointsSymbole retourne les points en fonction du symbole
+        }
+    }
+
+    // Déduire les points des pions restants du score du dernier joueur
+    scores[joueur] -= pointsPionsRestants;
+
+    // Afficher les scores
+    for (const std::pair<const int, int>& score : scores) {
+        std::cout << "Score du Joueur : " << score.first << "Score du Joueur " << score.second << std::endl;
+    }
+
+    // Vous pouvez retourner un booléen ou modifier la signature de la méthode si nécessaire
+    return true;
 }

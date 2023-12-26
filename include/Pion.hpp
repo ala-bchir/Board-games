@@ -2,22 +2,20 @@
 
 #ifndef Pion_HPP
 #define Pion_HPP
+#include <string>
 
 class Pion {
 private:
     int x, y; // Positions de la pièce sur le damier
-    char symbole; // Symbole représentant la pièce
-
+    std::string symbole; // Symbole représentant la pièce
 public:
-    Pion(int x, int y, char symbole);
+    Pion(int x, int y, const std::string& symbole);
     // Accesseurs et mutateurs
     int getX() const;
     int getY() const;
     void setPosition(int x, int y);
-    char getSymbole() const;
-    void setSymbole(char symbole);
-
-
+    std::string getSymbole() const;
+    void setSymbole(const std::string& symbole);
 };
 
 #endif // Pion_HPP
