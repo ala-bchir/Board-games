@@ -1,29 +1,32 @@
 #include <iostream>
-#include "Joueur.hpp"
 #include "Pion.hpp"
 #include "Safari.hpp"
 #include <string>
 #include <vector>
 
 int main() {
-    // Test de la classe Pion
-    std::cout << "Test de la classe Pion:" << std::endl;
-    Pion pion(1, 2, "L"); // Crée un pion avec la position (1,2) et le symbole 'L'
-    std::cout << "Position initiale du pion: (" << pion.getX() << ", " << pion.getY() << ")" << std::endl;
-    pion.setPosition(3, 4); // Change la position du pion
-    std::cout << "Nouvelle position du pion: (" << pion.getX() << ", " << pion.getY() << ")" << std::endl;
     
-    // Test de la classe Joueur
-    std::cout << "\nTest de la classe Joueur:" << std::endl;
-    Joueur joueur(1);
-    joueur.ajouterAnimal(pion);
-    std::cout << "Nombre d'animaux après ajout: " << joueur.getNombreAnimaux() << std::endl;
-    joueur.retirerAnimal(pion);
-    std::cout << "Nombre d'animaux après retrait: " << joueur.getNombreAnimaux() << std::endl;
+    Safari safari ;
+    safari.initialiserJeu();
+    int joueur_actuel = 1;  // Commencez avec le joueur 1
 
-    //---Test safari ------
+    // Placement alterné des animaux pour chaque joueur
+    for (int i = 0; i < 2; ++i) {
+        int x, y;
+        std::string symbole;
+
+        std::cout << "Joueur " << joueur_actuel << ", veuillez placer votre animal " << i + 1 << " : ";
+        std::cin >> x >> y >> symbole;
+        safari.placerAnimal(joueur_actuel, x, y, symbole);
+
+        // Passez au joueur suivant
+        joueur_actuel = (joueur_actuel == 1) ? 2 : 1;
+    }
     
-
+    safari.placerBarriere();
+    safari.afficherJeu();
+    
 
     return 0;
 }
+

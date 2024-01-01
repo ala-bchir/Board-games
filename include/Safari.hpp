@@ -4,7 +4,8 @@
 #include "Jeu.hpp"
 #include "Barriere.hpp"
 #include "Pion.hpp"   
-#include "Joueur.hpp" 
+
+#include "Damier.hpp"
 #include <vector>
 
 class Safari : public Jeu {
@@ -18,26 +19,26 @@ public:
 
     // Méthodes pour initialiser le jeu
     void initialiserJeu() override;
-    void placerAnimal(int joueurId, int x, int y, char symbole); // Pour placer les animaux initialement
+    void placerAnimal(int joueurId, int x, int y, const std::string& symbole); // Pour placer les animaux initialement
 
     // a changer
     
    
-
+    //void afficherJeu() ;
     
 
     // Gestion du tour de jeu
-    void  jouerTour(int joueurId); // Gère le tour d'un joueur spécifique
-    void deplacerAnimal(int x, int y, int newX, int newY); // Déplace l'animal 
-    void placerBarriere(const Barriere& nouvelleBarriere); // Place une nouvelle barrière
-
+    bool estMouvementValide(const Pion* pion, int xDestination, int yDestination)const override;
+    bool estVictoire(int joueur)const  override;
+    bool Deplacement(Pion* pion, int xDestination, int yDestination, int joueur) override;
+    bool jouerUnTour(int joueur) override;
+   
+    void placerBarriere(); // Place une nouvelle barrière
+   
+    
     // Vérification des conditions de fin
-    bool estCapture(const Pion& animal); // Vérifie si un animal est capturé
-    int determinerGagnant(); // Détermine le gagnant du jeu
-
+    
 private:
-    Joueur joueur1;  // Joueur 1 avec un ID de 1
-    Joueur joueur2;  // Joueur 2 avec un ID de 2
     std::vector<Pion> animaux; // Animaux sur le plateau
     std::vector<Barriere> barrieres; // Barrières sur le plateau
     int  Maxbarrieres = 50; // nbres de barriers max

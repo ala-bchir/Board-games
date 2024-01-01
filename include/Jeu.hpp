@@ -7,7 +7,7 @@
 #include <limits>
 #include <utility>
 #include "Damier.hpp"
-#include "pion.hpp"
+#include "Pion.hpp"
 #include <vector>
 
 

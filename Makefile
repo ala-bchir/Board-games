@@ -21,10 +21,10 @@ SFML_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 
 
 # Fichiers source
-SRC = $(SRC_DIR)/main.cpp $(SRC_DIR)/$(CMP_DIR)/Jeu.cpp $(SRC_DIR)/Butin.cpp $(SRC_DIR)/$(CMP_DIR)/Damier.cpp $(SRC_DIR)/$(CMP_DIR)/Pion.cpp
+SRC = $(SRC_DIR)/main.cpp $(SRC_DIR)/$(CMP_DIR)/Jeu.cpp $(SRC_DIR)/Butin.cpp $(SRC_DIR)/$(CMP_DIR)/Damier.cpp $(SRC_DIR)/$(CMP_DIR)/Pion.cpp 
 
 
-TEST_SRC = $(SRC_DIR)/test.cpp $(SRC_DIR)/$(CMP_DIR)/Joueur.cpp $(SRC_DIR)/$(CMP_DIR)/Pion.cpp 
+TEST_SRC = $(SRC_DIR)/test.cpp $(SRC_DIR)/$(SAFARI_DIR)/Safari.cpp  $(SRC_DIR)/$(CMP_DIR)/Pion.cpp $(SRC_DIR)/$(CMP_DIR)/Jeu.cpp $(SRC_DIR)/$(CMP_DIR)/Damier.cpp $(SRC_DIR)/$(SAFARI_DIR)/Barriere.cpp
 
 # Règle par défaut
 all: $(TARGET)

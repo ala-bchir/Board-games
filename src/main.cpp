@@ -1,4 +1,4 @@
-#include "Butin.hpp"  // Assurez-vous que ce chemin est correct pour inclure votre classe Butin
+#include "Butin.hpp"  
 #include <iostream>
 using namespace std;
 
@@ -14,7 +14,7 @@ int main() {
     cout << "Entrez le numéro de votre choix: ";
     cin >> choix;
 
-    Butin butin;  // Créez une instance de votre jeu
+    Butin butin;  
     int joueurActuel = 1;  // Commencez avec le joueur 1
     bool jeuTermine = false;
     // Gestion du choix
