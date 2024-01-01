@@ -1,6 +1,7 @@
 #include "Dames.hpp"
 #include <iostream>
 
+using namespace std;
 
 Dames::Dames():Jeu(8) { // Taille du damier fixée à 8x8
     initialiserJeu(); 
@@ -84,7 +85,6 @@ bool Dames::estMouvementValidePion(const Pion* pion, int xDestination, int yDest
             if ((couleurPion == 'N' && deltaY == 1) || (couleurPion == 'B' && deltaY == -1)) {
                 return true;
             }
-            else{std::cout << "Mouvement impossible, mauvaise direction";return false;}
         }
 
         // Règles pour les prises par les pions normaux
@@ -93,7 +93,7 @@ bool Dames::estMouvementValidePion(const Pion* pion, int xDestination, int yDest
             int xMilieu = (xOrigine + xDestination) / 2;
             int yMilieu = (yOrigine + yDestination) / 2;
             string pionPris = damier.getCellule(xMilieu, yMilieu);
-
+            
             if (pionPris != "." && pionPris.at(0) != couleurPion) {
                 return true; // Prise valide
             }
@@ -101,6 +101,7 @@ bool Dames::estMouvementValidePion(const Pion* pion, int xDestination, int yDest
                 return false;
             }
         }
+    return false;
 }
 bool Dames::estMouvementValide(const Pion* pion, int xDestination, int yDestination) const {
     if (!pion) {
@@ -142,7 +143,6 @@ bool Dames::estMouvementAvecPrise(const Pion* pion, int xDestination, int yDesti
         for (int i = 1; i < std::max(deltaX, deltaY); ++i) {
             int x = xOrigine + i * xDirection;
             int y = yOrigine + i * yDirection;
-            std::cout << "Probleme 4\n";
             std::string symboleSurChemin = damier.getCellule(x, y);
 
             // Si une case intermédiaire est occupée par un pion adverse, c'est une prise
@@ -190,12 +190,12 @@ bool Dames::priseObligatoireDisponible(int joueur) const {
 }
 
 bool Dames::priseDisponible(const Pion* pion) const {
+    if (!pion) return false;
+
     int xOrigine = pion->getX();
     int yOrigine = pion->getY();
     bool estDame = this->estDame(pion);
 
-    // Pour les dames, vérifier les prises sur toutes les diagonales
-    // Pour les pions, vérifier seulement les diagonales immédiates
     int portee = estDame ? damier.getTaille() : 2;
 
     for (int dx = -portee; dx <= portee; dx++) {
@@ -205,15 +205,20 @@ bool Dames::priseDisponible(const Pion* pion) const {
             int xDestination = xOrigine + dx;
             int yDestination = yOrigine + dy;
 
-            // Vérifiez si le mouvement est une prise
-            if (estMouvementAvecPrise(pion, xDestination, yDestination)) {
-                return true; // Une prise est possible
+            // S'assurer que la destination est à l'intérieur des limites du damier
+            if (xDestination >= 0 && xDestination < damier.getTaille() &&
+                yDestination >= 0 && yDestination < damier.getTaille()) {
+
+                if (estMouvementAvecPrise(pion, xDestination, yDestination)) {
+                    return true; // Une prise est possible
+                }
             }
         }
     }
     return false; // Aucune prise n'est possible
 }
-bool Dames::effectuerUnDeplacementSimple(Pion* pion, int xDestination, int yDestination, int joueur) {
+
+bool Dames::effectuerPrise(Pion* pion, int xDestination, int yDestination, int joueur) {
     if (!pion || !estMouvementValide(pion, xDestination, yDestination)) {
         return false;  // Le mouvement n'est pas valide
     }
@@ -233,30 +238,25 @@ bool Dames::effectuerUnDeplacementSimple(Pion* pion, int xDestination, int yDest
     if (abs(deltaX) > 1 || abs(deltaY) > 1) {  // Si le mouvement est une prise
         int xDirection = (deltaX > 0) ? 1 : -1;
         int yDirection = (deltaY > 0) ? 1 : -1;
-
-        // Parcourir le chemin entre l'origine et la destination
-        int x = xOrigine + xDirection;
-        int y = yOrigine + yDirection;
-        while (x != xDestination || y != yDestination) {
+        for (int i = 1; i < abs(deltaX); ++i) {
+            int x = xOrigine + i * xDirection;
+            int y = yOrigine + i * yDirection;
             std::string symboleSurChemin = damier.getCellule(x, y);
 
             if (symboleSurChemin != "." && symboleSurChemin.at(0) != pion->getSymbole().at(0)) {
-                Pion* pionCapture = getPion(x, y);  // Récupérer le pion capturé
+                Pion* pionCapture = getPion(x, y);
                 if (pionCapture) {
-                    enregistrerCapture(pionCapture, joueur); // Enregistrer le pion capturé
-                    supprimerPion(x, y); // Supprimer le pion capturé du damier
+                    enregistrerCapture(pionCapture, joueur);
+                    supprimerPion(x, y);
                     priseEffectuee = true;
-                    break;  // Sortir de la boucle après la première prise
                 }
             }
-
-            x += xDirection;
-            y += yDirection;
         }
     }
 
     return priseEffectuee;
 }
+
 //PROMOTION EN DAME
 void Dames::promouvoirPion(Pion* pion) {
     if (!pion) return; // Vérifier si le pion est valide
@@ -267,7 +267,7 @@ void Dames::promouvoirPion(Pion* pion) {
     // Vérifier si le pion doit être promu
     if ((couleurPion == 'N' && y == damier.getTaille() - 1) || // Pion noir à la dernière rangée du bas
         (couleurPion == 'B' && y == 0)) {                      // Pion blanc à la première rangée du haut
-        string symboleDame = (couleurPion == 'N') ? "DN" : "DB"; // Nouveau symbole pour la dame
+        string symboleDame = (couleurPion == 'N') ? "ND" : "BD"; // Nouveau symbole pour la dame
         pion->setSymbole(symboleDame); // Promouvoir le pion en dame
         damier.setCellule(x, y, symboleDame);
     }
@@ -279,14 +279,20 @@ bool Dames::Deplacement(Pion* pion, int xDestination, int yDestination, int joue
 
     bool EffectueUnePrise = false;
     do {
-        EffectueUnePrise = effectuerUnDeplacementSimple(pion, xDestination, yDestination, joueur);
-        if (EffectueUnePrise) {
-            // Vérifier si d'autres prises sont possibles à partir de la nouvelle position
-            int xNouveau = pion->getX();
-            int yNouveau = pion->getY();
-            if (!priseDisponible(pion)) break; // Sortir de la boucle si aucune prise supplémentaire n'est possible
-            // Demander les nouvelles coordonnées de destination pour la prochaine prise
-            DemanderSaisieCoordonnees(xDestination, yDestination); // Assurez-vous que cette fonction demande les coordonnées au joueur
+        if (!estMouvementValide(pion, xDestination, yDestination)){cout << "Le mouvement pour ce pion n'est pas valide reessayer"<< endl;
+        return false;
+        }
+        else{ 
+            EffectueUnePrise = effectuerPrise(pion, xDestination, yDestination, joueur);
+            if (EffectueUnePrise) {
+                // Vérifier si d'autres prises sont possibles à partir de la nouvelle position
+                int xNouveau = pion->getX();
+                int yNouveau = pion->getY();
+                if (!priseDisponible(pion)) break; // Sortir de la boucle si aucune prise supplémentaire n'est possible
+                // Demander les nouvelles coordonnées de destination pour la prochaine prise
+                cout <<"Une prise nouvelle prise est disponible, faites la " << endl;
+                DemanderSaisieCoordonnees(xDestination, yDestination); // Assurez-vous que cette fonction demande les coordonnées au joueur
+            }
         }
     } while (EffectueUnePrise);
 
@@ -298,53 +304,68 @@ bool Dames::Deplacement(Pion* pion, int xDestination, int yDestination, int joue
 }
 bool Dames::estVictoire(int joueur) const{
     char symboleAdversaire = (joueur == 1) ? 'B' : 'N';  // 'B' pour le joueur 2 et 'N' pour le joueur 1
+    int pionsAdversaire = 0;
+
+    // Compter les pions de l'adversaire
+    for (const Pion* pion : pions) {
+        if (pion->getSymbole().at(0) == symboleAdversaire) {
+            pionsAdversaire++;
+        }
+    }
+
+    // Si l'adversaire n'a plus de pions, le joueur actuel a gagné
+    if (pionsAdversaire == 0) {
+        return true;
+    }
 
     // Vérifier si l'adversaire a des mouvements valides
-    for (Pion* pion : pions) {
+    for (const Pion* pion : pions) {
         if (pion->getSymbole().at(0) == symboleAdversaire) {
             if (seDeplacer(pion)) {
                 return false; // L'adversaire a encore des mouvements valides
             }
         }
     }
-    return true; // L'adversaire n'a plus de mouvements valides, le joueur actuel a gagné
+
+    // Si aucun mouvement valide n'est trouvé, le joueur actuel a gagné
+    return true;
 }
+
 //Vérifie si un pion peut se déplacer.
-bool Dames::seDeplacer(const Pion* pion) const{
+bool Dames::seDeplacer(const Pion* pion) const {
+    if (!pion) return false; // Vérification initiale
+
     int xOrigine = pion->getX();
     int yOrigine = pion->getY();
-    char symbole = pion->getSymbole().at(0);
     bool estDame = this->estDame(pion); // Vérifie si le pion est une dame
 
-    // Déterminer la portée de vérification: 1 pour les pions standard, la taille du damier pour les dames
-    int portee = estDame ? damier.getTaille() : 1;
+    int portee = estDame ? damier.getTaille() : 2;
 
-    // Itérer sur toutes les cases diagonales possibles dans la portée déterminée
     for (int dx = -portee; dx <= portee; ++dx) {
         for (int dy = -portee; dy <= portee; ++dy) {
-            if (dx == 0 || dy == 0 || abs(dx) != abs(dy)) continue; // Ignorer les déplacements non diagonaux ou nuls
+            if (dx == 0 || dy == 0 || abs(dx) != abs(dy)) continue;
 
             int xDestination = xOrigine + dx;
             int yDestination = yOrigine + dy;
 
-            // Vérifier si la destination est dans les limites du damier
-            if (xDestination >= 0 && xDestination < damier.getTaille() && yDestination >= 0 && yDestination < damier.getTaille()) {
-                // Vérifier si le mouvement est valide pour un pion ou une dame
+            // Vérifier si la destination est valide et dans les limites du damier
+            if (xDestination >= 0 && xDestination < damier.getTaille() &&
+                yDestination >= 0 && yDestination < damier.getTaille()) {
                 if (estMouvementValide(pion, xDestination, yDestination)) {
-                    return true; // Un mouvement valide a été trouvé
+                    return true;
                 }
             }
         }
     }
-    return false; // Aucun mouvement valide n'a été trouvé
+    return false;
 }
+
 bool Dames::jouerUnTour(int joueur) {
     afficherJeu();
     std::cout << "Tour du Joueur " << joueur << std::endl;
 
     bool mouvementRealise = false;
     bool priseObligatoire = priseObligatoireDisponible(joueur);
-
     while (!mouvementRealise) {
         // Choisir un pion à déplacer
         int xOrigine, yOrigine;
@@ -356,13 +377,16 @@ bool Dames::jouerUnTour(int joueur) {
             std::cout << "Choix invalide, veuillez choisir un de vos pions." << std::endl;
             continue;
         }
-
         // Si une prise est obligatoire, vérifier que le pion choisi peut effectuer une prise
         if (priseObligatoire && !priseDisponible(pionChoisi)) {
             std::cout << "Une prise est obligatoire avec un autre pion. Veuillez reessayer." << std::endl;
             continue;
         }
-
+        if(!seDeplacer(pionChoisi)){
+        cout << "Le Pion n'a aucun deplacement possible \n";
+        continue;
+        }
+        // Effectuer le déplacement
         // Choisir la destination
         int xDestination, yDestination;
         std::cout << "Choisissez une destination pour le pion (format: x y): ";
@@ -373,16 +397,13 @@ bool Dames::jouerUnTour(int joueur) {
             std::cout << "Une prise est obligatoire. Veuillez choisir un mouvement qui capture un pion." << std::endl;
             continue;
         }
-
-        // Effectuer le déplacement
         if (Deplacement(pionChoisi, xDestination, yDestination, joueur)) {
             mouvementRealise = true;
             std::cout << "Mouvement effectue." << std::endl;
         } else {
-            std::cout << "Mouvement invalide, veuillez reessayer." << std::endl;
+            std::cout << "Mouvement non effectue, veuillez reessayer." << std::endl;
         }
     }
-
     // Vérifier si le jeu est terminé
     return estVictoire(joueur);
 }

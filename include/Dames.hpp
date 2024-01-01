@@ -17,7 +17,7 @@ private:
     bool priseDisponible(const Pion* pion) const;
     void promouvoirPion(Pion* pion);
     bool estVictoire(int joueur) const;
-    bool effectuerUnDeplacementSimple(Pion* pion, int xDestination, int yDestination, int joueur);
+    bool effectuerPrise(Pion* pion, int xDestination, int yDestination, int joueur);
     bool Deplacement(Pion* pion, int xDestination, int yDestination, int joueur) override;
     void placerPions();
     bool seDeplacer(const Pion* pion)const;
