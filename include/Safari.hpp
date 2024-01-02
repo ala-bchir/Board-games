@@ -7,6 +7,8 @@
 
 #include "Damier.hpp"
 #include <vector>
+#include <iostream>
+#include <algorithm>
 
 class Safari : public Jeu {
 public:
@@ -28,12 +30,20 @@ public:
     
 
     // Gestion du tour de jeu
+    void placerBarriere(); // Place une nouvelle barrière
+    void checkAnimal();
+    bool estAnimalCapture(int x, int y)const;
+    void enleverAnimauxCaptures();
+    bool barrierePresente(int x, int y) const ;
+    Pion* selectionnerAnimal(int joueur) ;
+
+    // methode herité de jeu 
     bool estMouvementValide(const Pion* pion, int xDestination, int yDestination)const override;
     bool estVictoire(int joueur)const  override;
     bool Deplacement(Pion* pion, int xDestination, int yDestination, int joueur) override;
     bool jouerUnTour(int joueur) override;
    
-    void placerBarriere(); // Place une nouvelle barrière
+    
    
     
     // Vérification des conditions de fin

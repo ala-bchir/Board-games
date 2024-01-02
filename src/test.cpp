@@ -23,8 +23,7 @@ int main() {
         joueur_actuel = (joueur_actuel == 1) ? 2 : 1;
     }
     
-    safari.placerBarriere();
-    safari.afficherJeu();
+    safari.jouerUnTour(joueur_actuel);
     
 
     return 0;
