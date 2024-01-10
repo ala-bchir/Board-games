@@ -1,4 +1,5 @@
 #include "Safari.hpp"
+#include <SFML/Graphics.hpp>
 
 // Constructeur
 Safari::Safari():Jeu(8),Maxbarrieres(50) {
@@ -13,7 +14,7 @@ void Safari::initialiserJeu(){
 // Placer un animal sur le plateau
 
 
-void Safari::placerAnimal(int joueurId, int x, int y, const std::string& symbole) {
+bool Safari::placerAnimal(int joueurId, int x, int y, const std::string& symbole) {
     
     // Vérifiez si la case est déjà occupée
     if (damier.getCellule(x, y) == ".") {
@@ -26,11 +27,12 @@ void Safari::placerAnimal(int joueurId, int x, int y, const std::string& symbole
         // Ajoutez l'animal au tableau des animaux du Safari
         animaux.push_back(nouvelAnimal);
 
-        // L'animal est bien placé, retournez true
+        return true;
         
     } else {
         // La case est déjà occupée, retournez false
-        std::cout << "La case est déjà occupée." << std::endl;
+        std::cout << "La case est déjà occupée ! Veuillez choisir un autre emplacement" << std::endl;
+        return false;
     }
 }
 
@@ -295,6 +297,8 @@ bool Safari::jouerUnTour(int joueur) {
     // Demander au joueur de déplacer l'un de ses animaux
     int xDestination, yDestination;
     Pion* animal;
+    
+    afficherJeu();
 
     do {
         // Sélectionner un animal du joueur actuel
@@ -305,7 +309,7 @@ bool Safari::jouerUnTour(int joueur) {
         std::cin >> xDestination >> yDestination;
 
     } while (!Deplacement(animal, xDestination, yDestination, joueur));
-
+    afficherJeu();
     // Place éventuellement une barrière
     placerBarriere();
 
@@ -319,6 +323,48 @@ bool Safari::jouerUnTour(int joueur) {
     }
 
     return false; // La partie continue
+}
+
+void Safari::afficheIG()  {
+    // Créer une fenêtre SFML
+    sf::RenderWindow window(sf::VideoMode(800, 800), "Safari Game");
+
+    // Boucle principale de rendu
+    while (window.isOpen()) {
+        // Gestion des événements
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+        }
+
+        // Effacer la fenêtre
+        window.clear();
+
+        // Dessiner le damier
+        int taille = damier.getTaille();
+        float cellSize = 800.0f / taille;
+
+        for (int y = 0; y < taille; ++y) {
+            for (int x = 0; x < taille; ++x) {
+                sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
+                cell.setPosition(x * cellSize, y * cellSize);
+
+                // Changer la couleur en fonction de la position de la cellule (damier noir et blanc)
+                if ((x + y) % 2 == 0) {
+                    cell.setFillColor(sf::Color::Black);
+                } else {
+                    cell.setFillColor(sf::Color::White);
+                }
+
+                window.draw(cell);
+            }
+        }
+
+        // Afficher la fenêtre
+        window.display();
+    }
 }
 
 

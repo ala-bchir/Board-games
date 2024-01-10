@@ -12,7 +12,7 @@
 
 class Safari : public Jeu {
 public:
-    // Constructeur
+    
     Safari();
 
     virtual ~Safari();
@@ -21,16 +21,16 @@ public:
 
     // Méthodes pour initialiser le jeu
     void initialiserJeu() override;
-    void placerAnimal(int joueurId, int x, int y, const std::string& symbole); // Pour placer les animaux initialement
+    bool placerAnimal(int joueurId, int x, int y, const std::string& symbole); // Pour placer les animaux initialement
 
     // a changer
     
-   
+    void afficheIG ();
     //void afficherJeu() ;
     
 
     // Gestion du tour de jeu
-    void placerBarriere(); // Place une nouvelle barrière
+    void placerBarriere(); 
     void checkAnimal();
     bool estAnimalCapture(int x, int y)const;
     void enleverAnimauxCaptures();

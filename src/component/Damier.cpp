@@ -44,3 +44,4 @@ bool Damier::CoordonneesValides(int x, int y) const {
     // Vérifier si les coordonnées sont dans les limites du damier
     return x >= 0 && x < getTaille() && y >= 0 && y < getTaille();
 }
+

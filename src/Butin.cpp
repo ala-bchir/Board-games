@@ -2,6 +2,7 @@
 #include <random>
 #include <algorithm>
 #include <iostream>
+#include <SFML/Graphics.hpp>
 
 using namespace std;
 
@@ -295,3 +296,55 @@ bool Butin::Score(int joueur) const {
     // Vous pouvez retourner un booléen ou modifier la signature de la méthode si nécessaire
     return true;
 }
+
+void Butin::afficheIG() {
+    sf::RenderWindow window(sf::VideoMode(800, 800), "Buttin Game");
+    window.clear();
+
+    int cellSize = 100; 
+
+    for (int i = 0; i < damier.getTaille(); ++i) {
+        for (int j = 0; j < damier.getTaille(); ++j) {
+            sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
+            cell.setPosition(i * cellSize, j * cellSize);
+
+            if ((i + j) % 2 == 0) {
+                cell.setFillColor(sf::Color::Black);
+            } else {
+                cell.setFillColor(sf::Color::White);
+            }
+
+            window.draw(cell);
+
+            std::string symbol = damier.getCellule(i, j);
+
+            if (symbol == "J" || symbol == "R" || symbol == "N") {
+                sf::CircleShape circle(cellSize / 3);
+                circle.setPosition(i * cellSize + cellSize / 6, j * cellSize + cellSize / 6);
+
+                if (symbol == "J") {
+                    circle.setFillColor(sf::Color::Yellow);
+                } else if (symbol == "R") {
+                    circle.setFillColor(sf::Color::Red);
+                } else if (symbol == "N") {
+                    circle.setFillColor(sf::Color::Black);
+                }
+                circle.setOutlineColor(sf::Color::White);
+                circle.setOutlineThickness(0.9);
+                window.draw(circle);
+            }
+        }
+    }
+
+    window.display();
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+        }
+    }
+}
+

@@ -19,6 +19,9 @@ private :
     int pointsSymbole(string symbole) const;
     int pointsPion(const Pion* pion) const;
     bool Score(int joueur) const ;
+
+    // affichage SFML
+    
     
 public:
     Butin();
@@ -27,6 +30,7 @@ public:
     void initialiserJeu() override;
 
     bool jouerUnTour(int joueur) override;
+    void afficheIG();
 };
 
 
