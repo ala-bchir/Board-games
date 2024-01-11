@@ -444,7 +444,7 @@ void Dames::afficheIG() {
 
             std::string symbol = damier.getCellule(i, j);
 
-            if ( symbol == "B" || symbol == "N") {
+            if ( symbol == "B" || symbol == "N" || symbol == "ND" || symbol == "BD") {
                 sf::CircleShape circle(cellSize / 3);
                 circle.setPosition(i * cellSize + cellSize / 6, j * cellSize + cellSize / 6);
 
@@ -454,7 +454,18 @@ void Dames::afficheIG() {
                 } else if (symbol == "N") {
                     circle.setFillColor(sf::Color::Black);
                     
+                } else if (symbol == "ND") {
+                    circle.setFillColor(sf::Color::Black);
+                    circle.setOutlineColor(sf::Color::Red);
+                    circle.setOutlineThickness(1.5);
+                    
+                }else if (symbol == "BD") {
+                    circle.setFillColor(sf::Color::White);
+                    circle.setOutlineColor(sf::Color::Green);
+                    circle.setOutlineThickness(1.5);
+                    
                 }
+                
                 
                 window.draw(circle);
             }
@@ -469,9 +480,9 @@ void Dames::afficheIG() {
             if (event.type == sf::Event::Closed) {
                 window.close();
             } else if (event.type == sf::Event::KeyPressed) {
-                // Vérifiez si la touche 'H' est pressée
+                
                 if (event.key.code == sf::Keyboard::H) {
-                    // Fermez la fenêtre
+                    
                     window.close();
                 }
             }

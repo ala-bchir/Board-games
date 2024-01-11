@@ -306,7 +306,7 @@ void Butin::afficheIG() {
             cell.setPosition(i * cellSize, j * cellSize);
 
             if ((i + j) % 2 == 0) {
-                cell.setFillColor(sf::Color::Black);
+                cell.setFillColor(sf::Color(169, 169, 169));
             } else {
                 cell.setFillColor(sf::Color::White);
             }
@@ -326,8 +326,7 @@ void Butin::afficheIG() {
                 } else if (symbol == "N") {
                     circle.setFillColor(sf::Color::Black);
                 }
-                circle.setOutlineColor(sf::Color::White);
-                circle.setOutlineThickness(0.9);
+                
                 window.draw(circle);
             }
         }
