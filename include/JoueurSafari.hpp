@@ -9,19 +9,19 @@ using namespace std;
 
 class JoueurSafari {
 public:
-    JoueurSafari(string _symbole );
+    JoueurSafari(int _id , string _symbole );
 
     
     int getId() const;
     string getSymbole() const ;
-    void ajouterPion(const Pion& pion) ;
+    void ajouterPion(Pion* pion) ;
     const vector<Pion>& getPions() const ;
 
-    static int nbJoueur = 1 ;
+    static int nbJoueur ;
     
 private:
-    const int id;  
-    const string symbole;
+    int id;  
+    string symbole;
     vector<Pion> pions;
 
 };

@@ -1,24 +1,21 @@
 #include "JoueurSafari.hpp"
 
-JoueurSafari::JoueurSafari(string symbole) :symbole{_symbole}{
-        id = nbJoueur ;
-        nbJoueur++;
-    }  
+JoueurSafari::JoueurSafari(int _id , string _symbole) :id(_id),symbole(_symbole){
+    
+}  
 
-int Joueur::getId() const {
+int JoueurSafari::getId() const {
     return id;
 }
 
-int Joueur::getSymbole() const {
+string JoueurSafari::getSymbole() const {
     return symbole;
 }
 
-const vector<Pion>& Joueur::getPions() const {
+const vector<Pion>& JoueurSafari::getPions() const {
     return pions;
 }
 
-void Joueur::ajouterPion(const Pion& pion) {
-    pions.push_back(pion);  // Ajoute une copie du pion
+void JoueurSafari::ajouterPion(Pion* pion) {
+    pions.push_back(*pion);
 }
-
-

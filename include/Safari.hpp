@@ -18,11 +18,12 @@ public:
 
     virtual ~Safari();
     
-    
+    JoueurSafari joueurL;
+    JoueurSafari joueurG;
 
     // Méthodes pour initialiser le jeu
     void initialiserJeu() override;
-    bool placerAnimal(const JoueurSafari& joueur, int x, int y);  
+    bool placerAnimal(JoueurSafari& joueur, int x, int y);  
     // a changer
     
     void afficheIG ();
@@ -35,7 +36,8 @@ public:
     bool estAnimalCapture(int x, int y)const;
     void enleverAnimauxCaptures();
     bool barrierePresente(int x, int y) const ;
-    Pion* selectionnerAnimal(int joueur) ;
+    Pion* selectionnerAnimal(JoueurSafari& joueur) ;
+    bool jouerUnTourSafari(JoueurSafari& joueur);
 
     // methode herité de jeu 
     bool estMouvementValide(const Pion* pion, int xDestination, int yDestination)const override;
@@ -52,8 +54,7 @@ private:
     std::vector<Pion> animaux; // Animaux sur le plateau
     std::vector<Barriere> barrieres; // Barrières sur le plateau
     int  Maxbarrieres = 50; // nbres de barriers max
-    JoueurSafari joueurL;
-    JoueurSafari joueurG;
+    
  
 
     

@@ -2,43 +2,37 @@
 #include <SFML/Graphics.hpp>
 
 // Constructeur
-Safari::Safari():Jeu(8),Maxbarrieres(50) {
-     
-}
 
-void Safari::initialiserJeu(){
-    
-}
+Safari::Safari():Jeu(8),joueurL(1,"L"), joueurG(2,"G"),Maxbarrieres(50) {}
+
+void Safari::initialiserJeu(){}
     
 
-// Placer un animal sur le plateau
-
-
-bool Safari::placerAnimal(int joueurId, int x, int y, const std::string& symbole) {
-    
+bool Safari::placerAnimal(JoueurSafari& joueur, int x, int y) {
     // Vérifiez si la case est déjà occupée
     if (damier.getCellule(x, y) == ".") {
-        
-        Pion nouvelAnimal(x, y, symbole);// Placez l'animal dans le damier
-        damier.setCellule(x, y, symbole);
+        Pion nouvelAnimal(x, y, joueur.getSymbole());  // Placez l'animal dans le damier avec le symbole du joueur
+        damier.setCellule(x, y, joueur.getSymbole());
         animaux.push_back(nouvelAnimal);
+        
 
         return true;
-        
     } else {
         std::cout << "La case est déjà occupée ! Veuillez choisir un autre emplacement" << std::endl;
         return false;
     }
 }
 
-Pion* Safari::selectionnerAnimal(int joueur){
+Pion* Safari::selectionnerAnimal(JoueurSafari& joueur) {
     int choix;
-    std::cout << "Joueur " << joueur << ", choisissez l'animal à déplacer :" << std::endl;
+    std::cout << "Joueur " << joueur.getId() << ", choisissez l'animal à déplacer :" << std::endl;
 
-    // Afficher la liste des animaux du joueur
+    // Afficher la liste des animaux du joueur avec le symbole spécifié
     for (size_t i = 0; i < animaux.size(); ++i) {
         const Pion& animal = animaux[i];
-        std::cout << i + 1 << ". " << animal.getSymbole() << " à la position (" << animal.getX() << ", " << animal.getY() << ")" << std::endl;
+        if (animal.getSymbole() == joueur.getSymbole()) {
+            std::cout << i + 1 << ". " << animal.getSymbole() << " à la position (" << animal.getX() << ", " << animal.getY() << ")" << std::endl;
+        }
     }
 
     // Demander au joueur de choisir un animal
@@ -47,15 +41,17 @@ Pion* Safari::selectionnerAnimal(int joueur){
         std::cin >> choix;
 
         // Vérifier si le choix est valide
-        if (choix < 1 || choix > animaux.size()) {
+        if (choix < 1 || choix > animaux.size() || animaux[choix - 1].getSymbole() != joueur.getSymbole()) {
             std::cout << "Choix invalide. Veuillez entrer un numéro valide." << std::endl;
         }
 
-    } while (choix < 1 || choix > animaux.size());
+    } while (choix < 1 || choix > animaux.size() || animaux[choix - 1].getSymbole() != joueur.getSymbole());
 
     // Retourner l'animal choisi
     return &animaux[choix - 1];
 }
+
+
 
 
 
@@ -73,14 +69,19 @@ void Safari::placerBarriere() {
 
         // Vérifier si les deux cases sont voisines
         if ((std::abs(x1 - x2) == 1 && y1 == y2) || (std::abs(y1 - y2) == 1 && x1 == x2)) {
-            // Créer une nouvelle barrière avec les coordonnées fournies
-            Barriere nouvelleBarriere(x1, y1, x2, y2);
+            // Vérifie si une barriere est deja presente
+            if (barrierePresente(x1, y1) || barrierePresente(x2, y2)) {
+                std::cout << "Erreur : une barrière existe déjà à cet emplacement. Veuillez réessayer." << std::endl;
+            } else {
+                // Créer une nouvelle barrière avec les coordonnées fournies
+                Barriere nouvelleBarriere(x1, y1, x2, y2);
 
-            // Ajouter la nouvelle barrière au tableau barrieres
-            barrieres.push_back(nouvelleBarriere);
+                // Ajouter la nouvelle barrière au tableau barrieres
+                barrieres.push_back(nouvelleBarriere);
 
-            std::cout << "Barrière placée avec succès !" << std::endl;
-            break;  // Sortir de la boucle une fois que des coordonnées valides ont été fournies
+                std::cout << "Barrière placée avec succès !" << std::endl;
+                break;  // Sortir de la boucle une fois que des coordonnées valides ont été fournies
+            }
         } else {
             std::cout << "Erreur : les deux cases doivent être voisines. Veuillez réessayer." << std::endl;
         }
@@ -257,12 +258,13 @@ void Safari::enleverAnimauxCaptures() {
     animaux.erase(it, animaux.end());
 }
 
+bool Safari::jouerUnTour(int i){return true;}
 
-bool Safari::jouerUnTour(int joueur) {
+bool Safari::jouerUnTourSafari(JoueurSafari& joueur) {
     // Demander au joueur de déplacer l'un de ses animaux
     int xDestination, yDestination;
     Pion* animal;
-    
+
     afficherJeu();
 
     do {
@@ -273,8 +275,9 @@ bool Safari::jouerUnTour(int joueur) {
         std::cout << "Entrez les coordonnées de destination (x y) : ";
         std::cin >> xDestination >> yDestination;
 
-    } while (!Deplacement(animal, xDestination, yDestination, joueur));
+    } while (!Deplacement(animal, xDestination, yDestination, joueur.getId()));
     afficherJeu();
+
     // Place éventuellement une barrière
     placerBarriere();
 
@@ -282,12 +285,11 @@ bool Safari::jouerUnTour(int joueur) {
     //enleverAnimauxCaptures();
 
     // Vérifier la victoire du joueur
-    if (estVictoire(joueur)) {
-
+    if (estVictoire(joueur.getId())) {
         return true; // La partie est terminée
     }
 
-    return false; // La partie continue
+    return false;
 }
 
 void Safari::afficheIG()  {

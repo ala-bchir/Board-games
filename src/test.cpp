@@ -12,36 +12,38 @@ int main() {
 
     //safari.afficheIG();
     // Placement alterné des animaux pour chaque joueur
-    for (int i = 0; i < 6; ++i) {
+    // Placement alterné des animaux pour chaque joueur
+    for (int i = 0; i < 3; ++i) {
         int x, y;
-        std::string symbole;
 
-        do{
+        do {
             safari.afficherJeu();
             std::cout << "\n";
             
-            std::cout << "Joueur " << joueur_actuel << ", veuillez placer votre animal ( x y symbole ):\n" ;
-            
-            std::cin >> x >> y >> symbole;
-        
-        }while (!(safari.placerAnimal(joueur_actuel, x, y, symbole)));
-        
+            std::cout << "Joueur " << joueur_actuel << ", veuillez placer votre animal ( x y ):\n";
+            std::cin >> x >> y;
+
+        } while (!(safari.placerAnimal((joueur_actuel == 1) ? safari.joueurL : safari.joueurG, x, y)));
+
         // Passez au joueur suivant
         joueur_actuel = (joueur_actuel == 1) ? 2 : 1;
     }
 
     std::cout << "La phase de placement est finie que le jeu commence : \n" << endl ;
 
-    joueur_actuel = 1 ;
+    JoueurSafari currentJoueur = safari.joueurL;
 
-    for (int i = 0 ; i < 6 ; i++){
-        
-        safari.jouerUnTour(joueur_actuel);
-        joueur_actuel = (joueur_actuel == 1) ? 2 : 1;
+    for (int i = 0; i < 6; i++) {
+        if (safari.jouerUnTourSafari(currentJoueur)) {
+            // Le joueur actuel a gagné
+            break;
+        }
 
-    }
+    // Changer de joueur pour le tour suivant
+    currentJoueur = (currentJoueur.getId() == safari.joueurL.getId()) ? safari.joueurG : safari.joueurL;
+}
     
-    safari.jouerUnTour(joueur_actuel);
+    
     
 
     return 0;
