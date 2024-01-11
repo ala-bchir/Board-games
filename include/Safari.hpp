@@ -3,7 +3,8 @@
 
 #include "Jeu.hpp"
 #include "Barriere.hpp"
-#include "Pion.hpp"   
+#include "Pion.hpp"  
+#include "JoueurSafari.hpp" 
 
 #include "Damier.hpp"
 #include <vector>
@@ -21,8 +22,7 @@ public:
 
     // Méthodes pour initialiser le jeu
     void initialiserJeu() override;
-    bool placerAnimal(int joueurId, int x, int y, const std::string& symbole); // Pour placer les animaux initialement
-
+    bool placerAnimal(const JoueurSafari& joueur, int x, int y);  
     // a changer
     
     void afficheIG ();
@@ -52,6 +52,8 @@ private:
     std::vector<Pion> animaux; // Animaux sur le plateau
     std::vector<Barriere> barrieres; // Barrières sur le plateau
     int  Maxbarrieres = 50; // nbres de barriers max
+    JoueurSafari joueurL;
+    JoueurSafari joueurG;
  
 
     
