@@ -262,13 +262,7 @@ void Safari::enleverAnimauxCaptures() {
 }
 
 bool Safari::jouerUnTour(int i){return true;} // Non utilisé
-bool Safari::estVictoire(int joueur)const override{
-    if(true){
-        return true;
-    }
-    return false;
-    
-}// Non utilisé
+bool Safari::estVictoire(int joueur) const {return true;}// Non utilisé
 
 bool Safari::jouerUnTourSafari(JoueurSafari& joueur) {
     // Demander au joueur de déplacer l'un de ses animaux

@@ -1,5 +1,6 @@
 #include "Butin.hpp"  
 #include <iostream>
+#include "Dames.hpp"
 using namespace std;
 
 int main() {
@@ -14,7 +15,8 @@ int main() {
     cout << "Entrez le numéro de votre choix: ";
     cin >> choix;
 
-    Butin butin;  
+    Butin butin; 
+    Dames dames; 
     int joueurActuel = 1;  // Commencez avec le joueur 1
     bool jeuTermine = false;
     // Gestion du choix
@@ -47,6 +49,16 @@ int main() {
         case 2:
             // Code pour démarrer Dame
             cout << "Vous avez choisi  Dame.\n";
+            dames.initialiserJeu();
+            dames.afficheIG();
+            while (!jeuTermine) {
+                jeuTermine = dames.jouerUnTour(joueurActuel);  // Joue un tour pour le joueur actuel
+                // Changez de joueur 
+                joueurActuel = joueurActuel == 1 ? 2 : 1;
+                dames.afficheIG();
+            }
+            // Fin de Partie
+            std::cout << "Fin de la partie!" << std::endl;
         
             break;
         case 3:

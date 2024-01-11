@@ -16,7 +16,7 @@ private:
     bool priseObligatoireDisponible(int joueur) const;
     bool priseDisponible(const Pion* pion) const;
     void promouvoirPion(Pion* pion);
-    bool estVictoire(int joueur) const;
+    bool estVictoire(int joueur) const override;
     bool effectuerPrise(Pion* pion, int xDestination, int yDestination, int joueur);
     bool Deplacement(Pion* pion, int xDestination, int yDestination, int joueur) override;
     void placerPions();
@@ -28,6 +28,7 @@ public:
     // Méthodes virtuelles de Jeu
     virtual void initialiserJeu() override;
     virtual bool jouerUnTour(int joueur) override;
+    void afficheIG();
 
 };
 
