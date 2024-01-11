@@ -18,19 +18,14 @@ bool Safari::placerAnimal(int joueurId, int x, int y, const std::string& symbole
     
     // Vérifiez si la case est déjà occupée
     if (damier.getCellule(x, y) == ".") {
-        // Créez un nouvel animal avec les informations fournies
-        Pion nouvelAnimal(x, y, symbole);
-
-        // Placez l'animal dans le damier
+        
+        Pion nouvelAnimal(x, y, symbole);// Placez l'animal dans le damier
         damier.setCellule(x, y, symbole);
-
-        // Ajoutez l'animal au tableau des animaux du Safari
         animaux.push_back(nouvelAnimal);
 
         return true;
         
     } else {
-        // La case est déjà occupée, retournez false
         std::cout << "La case est déjà occupée ! Veuillez choisir un autre emplacement" << std::endl;
         return false;
     }
@@ -52,14 +47,14 @@ Pion* Safari::selectionnerAnimal(int joueur){
         std::cin >> choix;
 
         // Vérifier si le choix est valide
-        if (choix < 1 || static_cast<size_t>(choix) > animaux.size()) {
+        if (choix < 1 || choix > animaux.size()) {
             std::cout << "Choix invalide. Veuillez entrer un numéro valide." << std::endl;
         }
 
-    } while (choix < 1 || static_cast<size_t>(choix) > animaux.size());
+    } while (choix < 1 || choix > animaux.size());
 
     // Retourner l'animal choisi
-    return const_cast<Pion*>(&animaux[choix - 1]);
+    return &animaux[choix - 1];
 }
 
 
@@ -123,24 +118,22 @@ bool Safari::estMouvementValide(const Pion* pion, int xDestination, int yDestina
         return false;
     }
 
-    // Obtenir les coordonnées actuelles de l'animal
+    // Vérifier si la destination est occupée par un autre animal
+    const Pion* pionDestination = getPion(xDestination, yDestination);
+    if (pionDestination != nullptr) {
+        return false; // La destination est occupée par un autre animal
+    }
+
+    // Vérifier la présence des barrières sur la trajectoire de l'animal
     int xActuel = pion->getX();
     int yActuel = pion->getY();
 
-    // Calculer la différence entre les coordonnées actuelles et de destination
     int diffX = std::abs(xDestination - xActuel);
     int diffY = std::abs(yDestination - yActuel);
 
     // Vérifier si le mouvement est vertical ou horizontal
     if (diffX != 0 && diffY != 0) {
-        // Le mouvement n'est ni vertical ni horizontal
-        return false;
-    }
-
-    // Vérifier si le mouvement est en ligne droite
-    if (diffX > 1 || diffY > 1) {
-        // Le mouvement n'est pas en ligne droite
-        return false;
+        return false; // Le mouvement n'est ni vertical ni horizontal
     }
 
     // Vérifier la présence des barrières sur la trajectoire de l'animal
@@ -149,8 +142,7 @@ bool Safari::estMouvementValide(const Pion* pion, int xDestination, int yDestina
         int directionY = (yDestination > yActuel) ? 1 : -1;
         for (int y = yActuel + directionY; y != yDestination; y += directionY) {
             if (barrierePresente(xActuel, y)) {
-                // Il y a une barrière sur la trajectoire
-                return false;
+                return false; // Il y a une barrière sur la trajectoire
             }
         }
     } else {
@@ -158,46 +150,27 @@ bool Safari::estMouvementValide(const Pion* pion, int xDestination, int yDestina
         int directionX = (xDestination > xActuel) ? 1 : -1;
         for (int x = xActuel + directionX; x != xDestination; x += directionX) {
             if (barrierePresente(x, yActuel)) {
-                // Il y a une barrière sur la trajectoire
-                return false;
+                return false; // Il y a une barrière sur la trajectoire
             }
         }
     }
 
-    // Vérifier si la destination est occupée par un autre animal
-    const Pion* pionDestination = getPion(xDestination, yDestination);
-    if (pionDestination != nullptr) {
-        // Il y a un animal à la destination, vérifier s'il peut sauter
-        if (diffX == 0) {
-            // Mouvement vertical
-            int directionY = (yDestination > yActuel) ? 1 : -1;
-            for (int y = yActuel + directionY; y != yDestination; y += directionY) {
-                if (getPion(xActuel, y) != nullptr) {
-                    // Il y a un animal entre la position actuelle et la destination
-                    return false;
-                }
-            }
-        } else {
-            // Mouvement horizontal
-            int directionX = (xDestination > xActuel) ? 1 : -1;
-            for (int x = xActuel + directionX; x != xDestination; x += directionX) {
-                if (getPion(x, yActuel) != nullptr) {
-                    // Il y a un animal entre la position actuelle et la destination
-                    return false;
-                }
-            }
-        }
-    }
-
-    // Le mouvement est valide
-    return true;
+    return true; // Le mouvement est valide
 }
+
 
 bool Safari::barrierePresente(int x, int y) const {
     for (const Barriere& barriere : barrieres) {
-        if ((barriere.getPremier() == std::make_pair(x, y) && barriere.getSecond() == std::make_pair(x, y + 1)) ||
-            (barriere.getPremier() == std::make_pair(x, y + 1) && barriere.getSecond() == std::make_pair(x, y))) {
-            // Il y a une barrière entre les cases (x, y) et (x, y + 1)
+        if (((barriere.getPremier() == std::make_pair(x, y) && barriere.getSecond() == std::make_pair(x, y + 1)) ||
+             (barriere.getPremier() == std::make_pair(x, y + 1) && barriere.getSecond() == std::make_pair(x, y))) ||
+            ((barriere.getPremier() == std::make_pair(x, y - 1) && barriere.getSecond() == std::make_pair(x, y)) ||
+             (barriere.getPremier() == std::make_pair(x, y) && barriere.getSecond() == std::make_pair(x, y - 1))) ||
+            ((barriere.getPremier() == std::make_pair(x - 1, y) && barriere.getSecond() == std::make_pair(x, y)) ||
+             (barriere.getPremier() == std::make_pair(x, y) && barriere.getSecond() == std::make_pair(x - 1, y))) ||
+            ((barriere.getPremier() == std::make_pair(x + 1, y) && barriere.getSecond() == std::make_pair(x, y)) ||
+             (barriere.getPremier() == std::make_pair(x, y) && barriere.getSecond() == std::make_pair(x + 1, y)))) {
+            // barrière entre les cases (x, y) et (x, y + 1) ou entre (x, y - 1) et (x, y)/ (x, y) et (x+1, y) ou entre (x-1, y)
+            
             return true;
         }
     }
@@ -222,10 +195,10 @@ bool Safari::Deplacement(Pion* pion, int xDestination, int yDestination, int jou
         damier.setCellule(xDestination, yDestination, pion->getSymbole());
 
         // Autres actions à effectuer en cas de déplacement réussi
-        std::cout << "deplacement réussi";
+        std::cout << "deplacement réussi\n";
         return true; // Le déplacement a réussi
     } else {
-        std::cout << "deplacement échoué ";
+        std::cout << "deplacement échoué\n ";
         return false; // Le déplacement est invalide
     }
 }
@@ -243,24 +216,17 @@ bool Safari::estAnimalCapture(int x, int y) const {
         // Vérifier les mouvements possibles de l'animal
         int mouvementsPossibles = 0;
 
-        // Tester les mouvements possibles vers le haut
-        if (estMouvementValide(&animal, x, y - 1)) {
-            mouvementsPossibles++;
-        }
+        // Tester les mouvements possibles dans toutes les directions
+        for (int i = x - 1; i <= x + 1; ++i) {
+            for (int j = y - 1; j <= y + 1; ++j) {
+                if (i == x && j == y) {
+                    continue;  // Ignorer la position actuelle de l'animal
+                }
 
-        // Tester les mouvements possibles vers le bas
-        if (estMouvementValide(&animal, x, y + 1)) {
-            mouvementsPossibles++;
-        }
-
-        // Tester les mouvements possibles vers la gauche
-        if (estMouvementValide(&animal, x - 1, y)) {
-            mouvementsPossibles++;
-        }
-
-        // Tester les mouvements possibles vers la droite
-        if (estMouvementValide(&animal, x + 1, y)) {
-            mouvementsPossibles++;
+                if (estMouvementValide(&animal, i, j)) {
+                    mouvementsPossibles++;
+                }
+            }
         }
 
         // Si l'animal peut visiter 8 ou moins de cases, il est capturé
@@ -269,7 +235,6 @@ bool Safari::estAnimalCapture(int x, int y) const {
 
     return false; // Animal non trouvé
 }
-
 
 void Safari::enleverAnimauxCaptures() {
     // Parcourir la liste des animaux
@@ -280,7 +245,7 @@ void Safari::enleverAnimauxCaptures() {
         // Vérifier si l'animal est enfermé par des barrières dans une zone de moins de 8 cases
         
         if (estAnimalCapture(x, y)) {
-            std::cout << "Animal capturé : " << animal.getSymbole() << std::endl;
+            std::cout << "Animal capturé : (" << animal.getX() << "," << animal.getY()<< "," << animal.getSymbole() << ")"<<std::endl;
             damier.setCellule(x, y, "."); // Mettre à jour la case du damier à vide
             return true; // Animal capturé
         }
@@ -314,7 +279,7 @@ bool Safari::jouerUnTour(int joueur) {
     placerBarriere();
 
     // Enlever les animaux capturés
-    enleverAnimauxCaptures();
+    //enleverAnimauxCaptures();
 
     // Vérifier la victoire du joueur
     if (estVictoire(joueur)) {
@@ -374,4 +339,6 @@ Safari::~Safari() {
         delete pion;
     }
     pions.clear();
+
+    
 }
