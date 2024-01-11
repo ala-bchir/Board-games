@@ -1,5 +1,4 @@
 #include "Butin.hpp"  
-#include "Dames.hpp"
 #include <iostream>
 using namespace std;
 
@@ -7,16 +6,15 @@ int main() {
     
     int choix ;
     // Affichage du message d'accueil
-    cout << "Bienvenue dans notre selection de jeux!\n";
+    cout << "Bienvenue dans notre sélection de jeux!\n";
     cout << "Veuillez choisir le jeu auquel vous voulez jouer:\n";
-    cout << "1. Butin\n";
+    cout << "1. Buttin\n";
     cout << "2. Dame\n";
     cout << "3. Safari\n";
-    cout << "Entrez le numero de votre choix: ";
+    cout << "Entrez le numéro de votre choix: ";
     cin >> choix;
 
     Butin butin;  
-    Dames dames;
     int joueurActuel = 1;  // Commencez avec le joueur 1
     bool jeuTermine = false;
     // Gestion du choix
@@ -42,11 +40,6 @@ int main() {
                 joueurActuel = joueurActuel == 1 ? 2 : 1;
             }
 
-
-
-            
-
-            
             // À la fin du jeu, affichez les résultats ou le gagnant
             std::cout << "Fin de la partie!" << std::endl;
 
@@ -54,15 +47,7 @@ int main() {
         case 2:
             // Code pour démarrer Dame
             cout << "Vous avez choisi  Dame.\n";
-            dames.initialiserJeu();
-            while (!jeuTermine) {
-                jeuTermine = dames.jouerUnTour(joueurActuel);  // Joue un tour pour le joueur actuel
-                // Changez de joueur 
-                joueurActuel = joueurActuel == 1 ? 2 : 1;
-            }
-            // Fin de Partie
-            std::cout << "Fin de la partie!" << std::endl;
-                
+        
             break;
         case 3:
             // Code pour démarrer  Safari

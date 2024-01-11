@@ -89,28 +89,31 @@ void Safari::placerBarriere() {
 }
 
      
-bool Safari::estVictoire(int joueur) const {
-    // Utilisez un dictionnaire pour compter le nombre d'occurrences de chaque symbole
-    std::map<std::string, int> occurrences;
+bool Safari::estVictoireSafari(){
+    bool joueur1Present = false;
+    bool joueur2Present = false;
 
-    // Parcourez le tableau des animaux du joueur et comptez les occurrences de chaque symbole
+    // Parcourir le tableau des animaux
     for (const auto& animal : animaux) {
-        occurrences[animal.getSymbole()]++;
-    }
-
-    // Parcourez le dictionnaire des occurrences
-    for (const auto& entry : occurrences) {
-        // Si le nombre d'occurrences est égal à la taille du tableau des animaux,
-        // cela signifie que le joueur a gagné en ayant un seul type d'animal restant
-        if (entry.second == animaux.size()) {
-            std::cout << "Le joueur a gagné avec les animaux de type '" << entry.first << "' !" << std::endl;
-            return true;
+        if (animal.getSymbole() == "L") {
+            joueur2Present = true;
+        } else if (animal.getSymbole() == "G") {
+            joueur1Present = true;
         }
     }
 
-    // Aucune victoire détectée
+    // Conditions de victoire
+    if (!joueur1Present) {
+        std::cout << "Le joueur 2 a gagné !" << std::endl;
+        return true;
+    } else if (!joueur2Present) {
+        std::cout << "Le joueur 1 a gagné !" << std::endl;
+        return true;
+    }
     return false;
+    
 }
+
 
 
 bool Safari::estMouvementValide(const Pion* pion, int xDestination, int yDestination) const {
@@ -231,7 +234,7 @@ bool Safari::estAnimalCapture(int x, int y) const {
         }
 
         // Si l'animal peut visiter 8 ou moins de cases, il est capturé
-        return mouvementsPossibles <= 8;
+        return mouvementsPossibles <= 4;
     }
 
     return false; // Animal non trouvé
@@ -258,7 +261,14 @@ void Safari::enleverAnimauxCaptures() {
     animaux.erase(it, animaux.end());
 }
 
-bool Safari::jouerUnTour(int i){return true;}
+bool Safari::jouerUnTour(int i){return true;} // Non utilisé
+bool Safari::estVictoire(int joueur)const override{
+    if(true){
+        return true;
+    }
+    return false;
+    
+}// Non utilisé
 
 bool Safari::jouerUnTourSafari(JoueurSafari& joueur) {
     // Demander au joueur de déplacer l'un de ses animaux
@@ -282,10 +292,10 @@ bool Safari::jouerUnTourSafari(JoueurSafari& joueur) {
     placerBarriere();
 
     // Enlever les animaux capturés
-    //enleverAnimauxCaptures();
+    enleverAnimauxCaptures();
 
     // Vérifier la victoire du joueur
-    if (estVictoire(joueur.getId())) {
+    if (estVictoireSafari()) {
         return true; // La partie est terminée
     }
 

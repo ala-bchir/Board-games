@@ -38,6 +38,7 @@ public:
     bool barrierePresente(int x, int y) const ;
     Pion* selectionnerAnimal(JoueurSafari& joueur) ;
     bool jouerUnTourSafari(JoueurSafari& joueur);
+    bool estVictoireSafari();
 
     // methode herité de jeu 
     bool estMouvementValide(const Pion* pion, int xDestination, int yDestination)const override;

@@ -11,11 +11,3 @@ int JoueurSafari::getId() const {
 string JoueurSafari::getSymbole() const {
     return symbole;
 }
-
-const vector<Pion>& JoueurSafari::getPions() const {
-    return pions;
-}
-
-void JoueurSafari::ajouterPion(Pion* pion) {
-    pions.push_back(*pion);
-}

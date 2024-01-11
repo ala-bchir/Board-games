@@ -14,16 +14,12 @@ public:
     
     int getId() const;
     string getSymbole() const ;
-    void ajouterPion(Pion* pion) ;
-    const vector<Pion>& getPions() const ;
-
-    static int nbJoueur ;
+    
     
 private:
     int id;  
     string symbole;
-    vector<Pion> pions;
-
+    
 };
 
 #endif // JOUEUR_H

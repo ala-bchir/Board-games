@@ -9,11 +9,12 @@ int main() {
     Safari safari ;
     safari.initialiserJeu();
     int joueur_actuel = 1;  // Commencez avec le joueur 1
+    bool jeuTermine = false;
 
     //safari.afficheIG();
+    
     // Placement alterné des animaux pour chaque joueur
-    // Placement alterné des animaux pour chaque joueur
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 2; ++i) {
         int x, y;
 
         do {
@@ -33,18 +34,14 @@ int main() {
 
     JoueurSafari currentJoueur = safari.joueurL;
 
-    for (int i = 0; i < 6; i++) {
-        if (safari.jouerUnTourSafari(currentJoueur)) {
-            // Le joueur actuel a gagné
-            break;
+    do{
+        if(safari.jouerUnTourSafari(currentJoueur)){
+            jeuTermine = true;
+        }else{// Changer de joueur pour le tour suivant
+            currentJoueur = (currentJoueur.getId() == safari.joueurL.getId()) ? safari.joueurG : safari.joueurL;
         }
-
-    // Changer de joueur pour le tour suivant
-    currentJoueur = (currentJoueur.getId() == safari.joueurL.getId()) ? safari.joueurG : safari.joueurL;
-}
-    
-    
-    
+           
+    }while(!jeuTermine);
 
     return 0;
 }
