@@ -23,10 +23,9 @@ private:
     bool seDeplacer(const Pion* pion)const;
     bool estDame(const Pion* pion) const;
 public:
-    // Constructeur
     Dames();
     virtual ~Dames();
-    // Implémentation des méthodes virtuelles de Jeu
+    // Méthodes virtuelles de Jeu
     virtual void initialiserJeu() override;
     virtual bool jouerUnTour(int joueur) override;
 

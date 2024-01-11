@@ -29,15 +29,13 @@ protected:
     virtual bool estVictoire(int joueur) const = 0; // Condition pour gagner
     virtual bool Deplacement(Pion* pion, int xDestination, int yDestination, int joueur) = 0;
 public:
-    // Constructeur
     Jeu(int tailleDamier);
 
-    // Destructeur virtuel pour une bonne gestion de la mémoire avec l'héritage
     virtual ~Jeu() = default;
     void afficherJeu() const; // Afficher l'état du jeu
 
-    // Méthodes virtuelles pures - à implémenter dans les classes dérivées
+    // Méthodes virtuelles pures
     virtual bool jouerUnTour(int joueur) = 0; // Jouer un tour de jeu
 };
 
-#endif // JEU_HPP
+#endif 

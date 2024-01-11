@@ -6,24 +6,24 @@
 
 using namespace std;
 
-// Constructeur de Butin
-Butin::Butin():Jeu(8) { // Taille du damier fixée à 8x8
+
+Butin::Butin():Jeu(8) { 
      
 }
-
+// Création des Pions
 void Butin::creerPions() {
-    // Créer les pions et les ajouter au vecteur 'Pions'
-    // Ajouter les pions noirs
+    // Ajout au vecteur 'Pions'
+    // Pions noirs
     for (int i = 0; i < 10; ++i) {
         ajouterPion(new Pion(-1, -1, "N"));
     }
 
-    // Ajouter les pions rouges
+    // Pions rouges
     for (int i = 0; i < 20; ++i) {
         ajouterPion(new Pion(-1, -1, "R"));
     }
 
-    // Ajouter les pions jaunes
+    // Pions jaunes
     for (int i = 0; i < 34; ++i) {
         ajouterPion(new Pion(-1, -1, "J"));
     }
@@ -144,7 +144,7 @@ bool Butin::jouerUnTour(int joueur) {
         std::cout << "Voulez-vous sauter avec ce pion ? (o/n): ";
         std::cin >> reponse;
 
-        // Vider le buffer pour éviter la lecture de caractères résiduels
+        // Vide le buffer pour éviter la lecture de caractères résiduels
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         if (reponse == 'o' || reponse == 'O') {
@@ -164,13 +164,12 @@ bool Butin::jouerUnTour(int joueur) {
                 end=true;  // Si un mouvement a déjà été réalisé, le tour est terminé
             }
             pionChoisi=nullptr;
-            // Sinon, continuez la boucle pour choisir un nouveau pion
         } else {
             std::cout << "Reponse invalide. Veuillez repondre par 'o' (oui) ou 'n' (non)." << std::endl;
         }
     }
     if(estVictoire(joueur)){Score(joueur);}
-    return estVictoire(joueur);  // Vérifier si le jeu est terminé
+    return estVictoire(joueur);  
 }
 
 
@@ -250,7 +249,7 @@ int Butin::pointsPion(const Pion* pion) const {
     } else if (symbole == "R") {
         return 2;  // Pion rouge
     } else {
-        return 1;  // Pion jaune ou tout autre pion
+        return 1;  // Pion jaune 
     }
 }
 
@@ -260,7 +259,7 @@ int Butin::pointsSymbole(string symbole) const {
     } else if (symbole == "R") {
         return 2;  // Pion rouge
     } else {
-        return 1;  // Pion jaune ou tout autre pion
+        return 1;  // Pion jaune
     }
 }
 
@@ -271,7 +270,7 @@ bool Butin::Score(int joueur) const {
     for (const std::pair<const int, std::vector<Pion*>>& joueur_pions : capturesParJoueur) {
         int scoreJoueur = 0;
         for (const Pion* pion : joueur_pions.second) {
-            scoreJoueur += pointsPion(pion);  // pointsPion est une méthode qui retourne les points du pion
+            scoreJoueur += pointsPion(pion);  
         }
         scores[joueur_pions.first] = scoreJoueur;
     }
@@ -292,8 +291,6 @@ bool Butin::Score(int joueur) const {
     for (const std::pair<const int, int>& score : scores) {
         std::cout << "Score du Joueur : " << score.first << "Score du Joueur " << score.second << std::endl;
     }
-
-    // Vous pouvez retourner un booléen ou modifier la signature de la méthode si nécessaire
     return true;
 }
 

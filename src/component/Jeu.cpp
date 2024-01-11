@@ -86,7 +86,7 @@ bool Jeu::DemanderSaisieCoordonnees(int& x, int& y) const {
         }
     } while (!saisieValide);
 
-    return true; // Saisie valide
+    return true; 
 }
 void Jeu::enregistrerCapture(Pion* pieceCapturee, int joueur) {
     capturesParJoueur[joueur].push_back(pieceCapturee);

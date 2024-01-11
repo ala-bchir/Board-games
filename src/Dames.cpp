@@ -38,7 +38,7 @@ void Dames::placerPions() {
 
 void Dames::initialiserJeu() {
 
-    placerPions();  // Méthode déjà définie pour placer les pions
+    placerPions();  
 }
 // Verifie si chaque le Mouvement est valide
 bool Dames::estMouvementValideDame(const Pion* pion, int xDestination, int yDestination) const {
@@ -152,7 +152,7 @@ bool Dames::estMouvementAvecPrise(const Pion* pion, int xDestination, int yDesti
         }
     }
 
-    return false;  // Aucune prise sur le chemin
+    return false; 
 }
 //Vérifie si une prise obligatoire est disponible pour un joueur/Pion
 bool Dames::priseObligatoireDisponible(int joueur) const {
@@ -186,7 +186,7 @@ bool Dames::priseObligatoireDisponible(int joueur) const {
             }
         }
     }
-    return false; // Aucune prise obligatoire n'est disponible
+    return false; 
 }
 
 bool Dames::priseDisponible(const Pion* pion) const {
@@ -257,7 +257,7 @@ bool Dames::effectuerPrise(Pion* pion, int xDestination, int yDestination, int j
     return priseEffectuee;
 }
 
-//PROMOTION EN DAME
+//Promotion en Dame
 void Dames::promouvoirPion(Pion* pion) {
     if (!pion) return; // Vérifier si le pion est valide
     int x= pion->getX();
@@ -291,7 +291,7 @@ bool Dames::Deplacement(Pion* pion, int xDestination, int yDestination, int joue
                 if (!priseDisponible(pion)) break; // Sortir de la boucle si aucune prise supplémentaire n'est possible
                 // Demander les nouvelles coordonnées de destination pour la prochaine prise
                 cout <<"Une prise nouvelle prise est disponible, faites la " << endl;
-                DemanderSaisieCoordonnees(xDestination, yDestination); // Assurez-vous que cette fonction demande les coordonnées au joueur
+                DemanderSaisieCoordonnees(xDestination, yDestination); 
             }
         }
     } while (EffectueUnePrise);
@@ -326,14 +326,12 @@ bool Dames::estVictoire(int joueur) const{
             }
         }
     }
-
-    // Si aucun mouvement valide n'est trouvé, le joueur actuel a gagné
     return true;
 }
 
 //Vérifie si un pion peut se déplacer.
 bool Dames::seDeplacer(const Pion* pion) const {
-    if (!pion) return false; // Vérification initiale
+    if (!pion) return false; 
 
     int xOrigine = pion->getX();
     int yOrigine = pion->getY();

@@ -4,7 +4,6 @@
 #include "Jeu.hpp"
 class Butin : public Jeu {
 private :
-    // Méthodes privées pour la logique interne du jeu
     void placerPionsAleatoirement();
     void creerPions();
     Pion* ChoixPion() const;
@@ -16,6 +15,7 @@ private :
     // Méthode virtuelle du Jeu
     bool estMouvementValide(const Pion* pion, int xDestination, int yDestination)const override;
     bool estVictoire(int joueur) const  override;
+    // Méthode pour calculer le Score
     int pointsSymbole(string symbole) const;
     int pointsPion(const Pion* pion) const;
     bool Score(int joueur) const ;
@@ -26,7 +26,7 @@ private :
 public:
     Butin();
     virtual ~Butin();
-    // Implémentation des méthodes virtuelles de Jeu
+    // Méthodes virtuelles du Jeu
     void initialiserJeu() override;
 
     bool jouerUnTour(int joueur) override;
@@ -34,4 +34,4 @@ public:
 };
 
 
-#endif // BUTIN_HPP
+#endif 

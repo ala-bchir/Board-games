@@ -1,7 +1,7 @@
 #include "Damier.hpp"
 #include <iostream>
 
-//Constructeur du Damier 
+ 
 Damier::Damier(int taille) 
     : taille(taille > 0 ? taille : 1),  // Utilisez une taille minimale de 1 si la taille fournie est non positive
       grille(this->taille, std::vector<std::string>(this->taille, ".")) {
@@ -36,7 +36,6 @@ string Damier::getCellule(int x, int y) const {
     }
 }
 
-// Obtenir la taille du damier
 int Damier::getTaille() const {
     return taille;
 }

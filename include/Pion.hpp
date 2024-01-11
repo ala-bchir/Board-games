@@ -1,5 +1,3 @@
-// pion.hpp
-
 #ifndef Pion_HPP
 #define Pion_HPP
 #include <string>
@@ -10,7 +8,7 @@ private:
     std::string symbole; // Symbole représentant la pièce
 public:
     Pion(int x, int y, const std::string& symbole);
-    // Accesseurs et mutateurs
+    // Accesseurs
     int getX() const;
     int getY() const;
     void setPosition(int x, int y);
@@ -18,4 +16,4 @@ public:
     void setSymbole(const std::string& symbole);
 };
 
-#endif // Pion_HPP
+#endif 
