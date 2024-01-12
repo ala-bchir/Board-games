@@ -24,6 +24,7 @@ public:
     // Méthodes pour initialiser le jeu
     void initialiserJeu() override;
     bool placerAnimal(JoueurSafari& joueur, int x, int y);  
+    
     // a changer
     
     void afficheIG ();
@@ -38,8 +39,7 @@ public:
     bool barrierePresente(int x, int y) const ;
     Pion* selectionnerAnimal(JoueurSafari& joueur) ;
     bool jouerUnTourSafari(JoueurSafari& joueur);
-    bool estVictoireSafari();
-
+    
     // methode herité de jeu 
     bool estMouvementValide(const Pion* pion, int xDestination, int yDestination)const override;
     bool estVictoire(int joueur)const  override;
@@ -49,7 +49,9 @@ public:
     
    
     
-    // Vérification des conditions de fin
+    // verification des conditions de fin
+    bool estVictoireSafari();
+
     
 private:
     std::vector<Pion> animaux; // Animaux sur le plateau

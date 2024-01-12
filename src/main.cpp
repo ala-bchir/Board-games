@@ -1,6 +1,7 @@
 #include "Butin.hpp"  
 #include <iostream>
 #include "Dames.hpp"
+#include "Safari.hpp"
 using namespace std;
 
 int main() {
@@ -17,8 +18,11 @@ int main() {
 
     Butin butin; 
     Dames dames; 
+    Safari safari;
+
     int joueurActuel = 1;  // Commencez avec le joueur 1
     bool jeuTermine = false;
+    JoueurSafari currentJoueur = safari.joueurL;
     // Gestion du choix
     
     switch (choix) {
@@ -64,8 +68,39 @@ int main() {
         case 3:
             // Code pour démarrer  Safari
             cout << "Vous avez choisi  Safari.\n";
+            safari.initialiserJeu();
+            for (int i = 0; i < 6; ++i) {
+                int x, y;
+
+                do {
+                    safari.afficherJeu();
+                    std::cout << "\n";
+                    
+                    std::cout << "Joueur " << joueurActuel << ", veuillez placer votre animal ( x y ):\n";
+                    std::cin >> x >> y;
+
+                } while (!(safari.placerAnimal((joueurActuel == 1) ? safari.joueurL : safari.joueurG, x, y)));
+
+                // Passez au joueur suivant
+                joueurActuel = (joueurActuel == 1) ? 2 : 1;
+            }
+            safari.afficheIG();
+
+            std::cout << "La phase de placement est finie que le jeu commence : \n" << endl ;
+
             
-            break;
+
+            do{
+                if(safari.jouerUnTourSafari(currentJoueur)){
+                    jeuTermine = true;
+                }else{
+                    currentJoueur = (currentJoueur.getId() == safari.joueurL.getId()) ? safari.joueurG : safari.joueurL;
+                }
+                safari.afficheIG();
+                
+            }while(!jeuTermine);
+            
+        break;
         default:
             // Gestion des entrées non valides
             cout << "Choix non valide. Veuillez entrer un numéro entre 1 et 3.\n";

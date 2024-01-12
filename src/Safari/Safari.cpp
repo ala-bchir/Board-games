@@ -1,7 +1,8 @@
 #include "Safari.hpp"
 #include <SFML/Graphics.hpp>
+#include <SFML/Window/Event.hpp>
 
-// Constructeur
+
 
 Safari::Safari():Jeu(8),joueurL(1,"L"), joueurG(2,"G"),Maxbarrieres(50) {}
 
@@ -187,23 +188,18 @@ bool Safari::Deplacement(Pion* pion, int xDestination, int yDestination, int jou
     int xDepart = pion->getX();
     int yDepart = pion->getY();
 
-    // Vérifier la validité du mouvement
     if (estMouvementValide(pion, xDestination, yDestination)) {
-        // Mettre à jour la case précédente à vide
         damier.setCellule(xDepart, yDepart, ".");
 
-        // Mettre à jour la position de l'animal
         pion->setPosition(xDestination, yDestination);
 
-        // Mettre à jour la nouvelle case avec le symbole du pion
         damier.setCellule(xDestination, yDestination, pion->getSymbole());
 
-        // Autres actions à effectuer en cas de déplacement réussi
         std::cout << "deplacement réussi\n";
-        return true; // Le déplacement a réussi
+        return true; //  déplacement a réussi
     } else {
         std::cout << "deplacement échoué\n ";
-        return false; // Le déplacement est invalide
+        return false; // déplacement invalide
     }
 }
 
@@ -213,14 +209,14 @@ bool Safari::estAnimalCapture(int x, int y) const {
         return animal.getX() == x && animal.getY() == y;
     });
 
-    // Vérifier s'il y a eu des éléments trouvés
+    // verifier s'il y a eu des éléments trouvés
     if (it != animaux.end()) {
         const Pion& animal = *it;
 
-        // Vérifier les mouvements possibles de l'animal
+        // cérifier les mouvements possibles de l'animal
         int mouvementsPossibles = 0;
 
-        // Tester les mouvements possibles dans toutes les directions
+        // tester les mouvements possibles dans toutes les directions
         for (int i = x - 1; i <= x + 1; ++i) {
             for (int j = y - 1; j <= y + 1; ++j) {
                 if (i == x && j == y) {
@@ -233,20 +229,19 @@ bool Safari::estAnimalCapture(int x, int y) const {
             }
         }
 
-        // Si l'animal peut visiter 8 ou moins de cases, il est capturé
-        return mouvementsPossibles <= 4;
+        // si l'animal peut visiter 8 ou moins de cases, il est capturé
+        return mouvementsPossibles <= 8;
     }
 
-    return false; // Animal non trouvé
+    return false; 
 }
 
 void Safari::enleverAnimauxCaptures() {
-    // Parcourir la liste des animaux
     auto it = std::remove_if(animaux.begin(), animaux.end(), [this](const Pion& animal) {
         int x = animal.getX();
         int y = animal.getY();
 
-        // Vérifier si l'animal est enfermé par des barrières dans une zone de moins de 8 cases
+        // Vérifier si l'animal est enfermé par des barrières dans une zone de moins de 8 cases( )
         
         if (estAnimalCapture(x, y)) {
             std::cout << "Animal capturé : (" << animal.getX() << "," << animal.getY()<< "," << animal.getSymbole() << ")"<<std::endl;
@@ -285,8 +280,8 @@ bool Safari::jouerUnTourSafari(JoueurSafari& joueur) {
     // Place éventuellement une barrière
     placerBarriere();
 
-    // Enlever les animaux capturés
-    enleverAnimauxCaptures();
+    // Enlever les animaux capturés( probleme avec l'algo de la fonction animalCapturé)
+    //enleverAnimauxCaptures();
 
     // Vérifier la victoire du joueur
     if (estVictoireSafari()) {
@@ -296,47 +291,90 @@ bool Safari::jouerUnTourSafari(JoueurSafari& joueur) {
     return false;
 }
 
-void Safari::afficheIG()  {
-    // Créer une fenêtre SFML
-    sf::RenderWindow window(sf::VideoMode(800, 800), "Safari Game");
+void Safari::afficheIG() {
+    sf::RenderWindow window(sf::VideoMode(800, 800), "Safari");
+    window.clear();
 
-    // Boucle principale de rendu
+    int cellSize = 100;
+    sf::Texture textureG;
+    sf::Texture textureL;
+
+    if (!textureG.loadFromFile("images/giraffe.png")) {
+    }
+
+    if (!textureL.loadFromFile("images/lion.png")) {
+    }
+
+    // créez des sprites pour les lions et les girffes 
+    sf::Sprite spriteG(textureG);
+    sf::Sprite spriteL(textureL);
+
+    // Dessin du damier
+    for (int i = 0; i < damier.getTaille(); ++i) {
+        for (int j = 0; j < damier.getTaille(); ++j) {
+            sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
+            cell.setPosition(i * cellSize, j * cellSize);
+
+            if ((i + j) % 2 == 0) {
+                cell.setFillColor(sf::Color(240, 230, 140));
+            } else {
+                cell.setFillColor(sf::Color(144, 238, 144));
+            }
+
+            window.draw(cell);
+
+            
+            std::string symbol = damier.getCellule(i, j);
+            // dessin des images
+            if (symbol == "L") {
+                spriteL.setPosition(i * cellSize + (cellSize - spriteL.getLocalBounds().width) / 2, j * cellSize + (cellSize - spriteL.getLocalBounds().height) / 2);
+                window.draw(spriteL);
+            } else if (symbol == "G") {
+                spriteG.setPosition(i * cellSize + (cellSize - spriteG.getLocalBounds().width) / 2, j * cellSize + (cellSize - spriteG.getLocalBounds().height) / 2);
+                window.draw(spriteG);
+            }
+        }
+    }
+
+    // fonctionement non correcte ( affichage mais mauvais sens )
+    /* Dessin des barrières
+    for (const auto& barriere : barrieres) {
+    if (barriere.estVerticale()) {
+        // Barrière verticale
+        sf::Vertex line[] = {
+            sf::Vertex(sf::Vector2f(barriere.getPremier().first * cellSize, barriere.getPremier().second * cellSize), sf::Color::Red),
+            sf::Vertex(sf::Vector2f(barriere.getSecond().first  * cellSize, barriere.getSecond().second * cellSize), sf::Color::Red)
+        };
+
+        window.draw(line, 2, sf::Lines);
+    } else {
+        // Barrière horizontale
+        sf::Vertex line[] = {
+            sf::Vertex(sf::Vector2f(barriere.getPremier().first * cellSize, (barriere.getPremier().second) * cellSize), sf::Color::Red),
+            sf::Vertex(sf::Vector2f(barriere.getSecond().first * cellSize, (barriere.getSecond().second)* cellSize), sf::Color::Red)
+        };
+
+        window.draw(line, 2, sf::Lines);
+    }*/
+
+
+    window.display();
+
+    
     while (window.isOpen()) {
-        // Gestion des événements
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
-            }
-        }
-
-        // Effacer la fenêtre
-        window.clear();
-
-        // Dessiner le damier
-        int taille = damier.getTaille();
-        float cellSize = 800.0f / taille;
-
-        for (int y = 0; y < taille; ++y) {
-            for (int x = 0; x < taille; ++x) {
-                sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
-                cell.setPosition(x * cellSize, y * cellSize);
-
-                // Changer la couleur en fonction de la position de la cellule (damier noir et blanc)
-                if ((x + y) % 2 == 0) {
-                    cell.setFillColor(sf::Color::Black);
-                } else {
-                    cell.setFillColor(sf::Color::White);
+            } else if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::H) {
+                    window.close();
                 }
-
-                window.draw(cell);
             }
         }
-
-        // Afficher la fenêtre
-        window.display();
     }
 }
+
 
 
 Safari::~Safari() {

@@ -22,3 +22,6 @@ Barriere::Case Barriere::getSecond() const {
 int Barriere::getNombreBarrieres() {
     return nombreBarrieres;
 }
+bool Barriere::estVerticale() const {
+    return premier.first == second.first;
+}

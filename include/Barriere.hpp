@@ -14,6 +14,7 @@ public:
     // Accesseurs
     Case getPremier() const;
     Case getSecond() const;
+    bool estVerticale() const;
 
     // Méthode statique pour obtenir le nombre total de barrières créées
     static int getNombreBarrieres();

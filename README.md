@@ -16,3 +16,12 @@ Ce projet propose trois jeux de plateformes développés en C++ : Butin, Dames e
 make
 # Exécutez le programme
 ./jeu
+```
+
+### Interaction avec le Jeu
+
+- Les mouvements des pions sont réalisables via la ligne de commande.
+- A chaque Tour de role l'état actuel du damier est affichée automatiquement , appuyez sur la touche `(H)` pour masquer l'interface SFML.
+- Vous pouvez continuer à jouer sur la ligne de commande après avoir masqué l'interface.
+
+**Retrouvez le code source sur GitHub : [https://github.com/ala-bchir/Board-games](https://github.com/ala-bchir/Board-games)**
