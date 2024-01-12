@@ -1,13 +1,10 @@
 #include "Dames.hpp"
 #include <iostream>
-#include <SFML/Graphics.hpp>
-#include <SFML/Window/Event.hpp>
-
 
 using namespace std;
 
 Dames::Dames():Jeu(8) { // Taille du damier fixée à 8x8
-     
+    initialiserJeu(); 
 }
 
 bool Dames::estDame(const Pion* pion) const{
@@ -223,7 +220,7 @@ bool Dames::priseDisponible(const Pion* pion) const {
 
 bool Dames::effectuerPrise(Pion* pion, int xDestination, int yDestination, int joueur) {
     if (!pion || !estMouvementValide(pion, xDestination, yDestination)) {
-        return false;  // Le mouvement n'est pas valide
+        return false;  
     }
 
     int xOrigine = pion->getX();
@@ -288,6 +285,9 @@ bool Dames::Deplacement(Pion* pion, int xDestination, int yDestination, int joue
         else{ 
             EffectueUnePrise = effectuerPrise(pion, xDestination, yDestination, joueur);
             if (EffectueUnePrise) {
+                // Vérifier si d'autres prises sont possibles à partir de la nouvelle position
+                int xNouveau = pion->getX();
+                int yNouveau = pion->getY();
                 if (!priseDisponible(pion)) break; // Sortir de la boucle si aucune prise supplémentaire n'est possible
                 // Demander les nouvelles coordonnées de destination pour la prochaine prise
                 cout <<"Une prise nouvelle prise est disponible, faites la " << endl;
@@ -303,7 +303,7 @@ bool Dames::Deplacement(Pion* pion, int xDestination, int yDestination, int joue
 
 }
 bool Dames::estVictoire(int joueur) const{
-    char symboleAdversaire = (joueur == 1) ? 'B' : 'N';  // 'B' pour le joueur 2 et 'N' pour le joueur 1
+    char symboleAdversaire = (joueur == 1) ? 'N' : 'B';  // 'B' pour le joueur 2 et 'N' pour le joueur 1
     int pionsAdversaire = 0;
 
     // Compter les pions de l'adversaire
@@ -421,72 +421,4 @@ Dames::~Dames(){
         }
     }
     capturesParJoueur.clear();
-}
-
-void Dames::afficheIG() {
-    sf::RenderWindow window(sf::VideoMode(800, 800), "Dames");
-    window.clear();
-
-    int cellSize = 100; 
-
-    for (int i = 0; i < damier.getTaille(); ++i) {
-        for (int j = 0; j < damier.getTaille(); ++j) {
-            sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
-            cell.setPosition(i * cellSize, j * cellSize);
-
-            if ((i + j) % 2 == 0) {
-                cell.setFillColor(sf::Color(169, 169, 169));
-            } else {
-                cell.setFillColor(sf::Color::White);
-            }
-
-            window.draw(cell);
-
-            std::string symbol = damier.getCellule(i, j);
-
-            if ( symbol == "B" || symbol == "N" || symbol == "ND" || symbol == "BD") {
-                sf::CircleShape circle(cellSize / 3);
-                circle.setPosition(i * cellSize + cellSize / 6, j * cellSize + cellSize / 6);
-
-                if (symbol == "B") {
-                    circle.setFillColor(sf::Color::White);
-                    
-                } else if (symbol == "N") {
-                    circle.setFillColor(sf::Color::Black);
-                    
-                } else if (symbol == "ND") {
-                    circle.setFillColor(sf::Color::Black);
-                    circle.setOutlineColor(sf::Color::Red);
-                    circle.setOutlineThickness(1.5);
-                    
-                }else if (symbol == "BD") {
-                    circle.setFillColor(sf::Color::White);
-                    circle.setOutlineColor(sf::Color::Green);
-                    circle.setOutlineThickness(1.5);
-                    
-                }
-                
-                
-                window.draw(circle);
-            }
-        }
-    }
-
-    window.display();
-
-    while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            } else if (event.type == sf::Event::KeyPressed) {
-                
-                if (event.key.code == sf::Keyboard::H) {
-                    
-                    window.close();
-                }
-            }
-        }
-    }
-
 }
